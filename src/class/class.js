@@ -7,11 +7,19 @@ var BasicObject = cc.BasicObject = {
     classname: 'BasicObject'
 };
 
+var beget = function (proto) {
+    var F = function () {};
+    F.prototype = proto;
+    return new F();
+};
+
 var initClass = function (self, methods, superclass) {
     self.extend({
         new: function () {
-            var obj = superclass ? superclass.new() : {};
+            var proto = superclass ? superclass.new() : {};
+            var obj = beget(proto);
             obj.class = self;
+            obj.super = proto;
             if (cc.isFunction(methods)) {
                 methods = methods(obj);
             }

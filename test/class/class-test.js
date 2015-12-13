@@ -36,7 +36,7 @@ QUnit.test('instanceOf', function (assert) {
 });
 
 QUnit.test('inherit', function (assert) {
-    var X = 1, Y = 2;
+    var X = 1, Y = 2, newX = 3;
     var Sup = cc.Class.extends({
         x: X
     });
@@ -46,4 +46,7 @@ QUnit.test('inherit', function (assert) {
     var sub = Sub.new();
     assert.equal(sub.x, X, 'obj.x === X');
     assert.equal(sub.y, Y, 'obj.y === Y');
+    assert.equal(sub.super.x, X, 'sub.super.x === X');
+    sub.super.x = newX;
+    assert.equal(sub.x, newX, 'sub.x === newX');
 });
