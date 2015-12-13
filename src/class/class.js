@@ -1,34 +1,34 @@
 
-var BasicObject = cc.BasicObject = {};
+var Class = cc.Class = {
+    classname: 'Class'
+};
 
-var Class = cc.Class = (function () {
-    var self = {};
+var BasicObject = cc.BasicObject = {
+    classname: 'BasicObject'
+};
+
+var initClass = function (self, methods, superclass) {
     self.extend({
-        extends: function (methods) {
-            return {
-                new: function () {
-                    var obj = { class: this };
-                    if (cc.isFunction(methods)) {
-                        methods = methods(obj);
-                    }
-                    if (methods) {
-                        obj.extend(methods);
-                    }
-                    return obj;
-                },
-                class: self,
-                superclass: self
-            };
+        new: function () {
+            var obj = superclass ? superclass.new() : {};
+            obj.class = self;
+            if (cc.isFunction(methods)) {
+                methods = methods(obj);
+            }
+            if (methods) {
+                obj.extend(methods);
+            }
+            return obj;
         },
-        classname: 'Class',
-        class: self,
-        superclass: BasicObject
+        extends: function (mthds) {
+            var cls = {};
+            initClass(cls, mthds, self);
+            return cls;
+        },
+        class: Class,
+        superclass: superclass
     });
-    return self;
-})();
+};
 
-BasicObject.extend({
-    class: Class,
-    classname: 'BasicObject',
-    superclass: null
-});
+initClass(BasicObject, null, null);
+initClass(Class, null, BasicObject);
