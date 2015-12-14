@@ -45,12 +45,12 @@ var cc = {};
         if (cc.isFunction(cls)) {
             return inst instanceof cls;
         }
-        var c = inst.class;
+        var c = inst.$meta$ && inst.$meta$.class;
         while (c) {
             if (c === cls) {
                 return true;
             }
-            c = c.superclass;
+            c = c.$meta$.superclass;
         }
         return false;
     };
@@ -75,6 +75,10 @@ var cc = {};
     Function.prototype.overloadSetter = function () {
         return this.decorate(multipleSetterDecorator);
     };
+
+    Function.extend({
+        noop: function () {}
+    });
 
     return cc;
 
