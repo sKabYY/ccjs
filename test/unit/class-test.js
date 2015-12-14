@@ -102,7 +102,7 @@ QUnit.test('initialize with params', function (assert) {
             },
             x: function () { return _x; },
             y: function () { return _y; }
-        }
+        };
     });
     var X = 2, Y = 3;
     var p1 = Point2D.new(X, Y);
@@ -121,7 +121,7 @@ QUnit.test('test this', function (assert) {
             setp: function (p) {
                 this.p = p;
             }
-        }
+        };
     });
     var Q = 21, P = 12;
     var obj = Test.new(Q);
@@ -129,4 +129,29 @@ QUnit.test('test this', function (assert) {
     assert.equal(obj.a, A, 'obj.a === A');
     assert.equal(obj.p, P, 'obj.p === P');
     assert.equal(obj.q, Q, 'obj.q === Q');
+});
+
+QUnit.test('no this', function (assert) {
+    var Point2D = cc.Class.new(function () {
+        var _x, _y;
+        return {
+            initialize: function (x, y) {
+                _x = x;
+                _y = y;
+            },
+            x: function () { return _x; },
+            y: function () { return _y; },
+            setX: function (x) { _x = x; },
+            setY: function (y) { _y = y; }
+        };
+    });
+    var X = 11, Y = 22, newX = 88, newY = 99;
+    var mkPoint2D = Point2D.new;
+    var p = mkPoint2D(11, 22);
+    assert.equal(invoke(p.x), X, 'invoke(p.x) === X');
+    assert.equal(invoke(p.y), Y, 'invoke(p.x) === Y');
+    invoke(p.setX, [newX]);
+    invoke(p.setY, [newY]);
+    assert.equal(invoke(p.x), newX, 'invoke(p.x) === newX');
+    assert.equal(invoke(p.y), newY, 'invoke(p.x) === newY');
 });
