@@ -109,3 +109,24 @@ QUnit.test('initialize with params', function (assert) {
     assert.equal(p1.x(), X, 'p1.x() === X');
     assert.equal(p1.y(), Y, 'p1.y() === Y');
 });
+
+QUnit.test('test this', function (assert) {
+    var A = 333;
+    var Test = cc.Class.new(function () {
+        this.a = A;
+        return {
+            initialize: function (q) {
+                this.q = q;
+            },
+            setp: function (p) {
+                this.p = p;
+            }
+        }
+    });
+    var Q = 21, P = 12;
+    var obj = Test.new(Q);
+    obj.setp(P);
+    assert.equal(obj.a, A, 'obj.a === A');
+    assert.equal(obj.p, P, 'obj.p === P');
+    assert.equal(obj.q, Q, 'obj.q === Q');
+});

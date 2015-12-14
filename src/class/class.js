@@ -30,7 +30,7 @@ var initClass = function (self, superclass, methodsOrInit) {
     var alloc = function () {
         var obj = mkObj();
         obj.$meta$ = { class: self };
-        var methods = getMethods(obj);
+        var methods = getMethods.call(obj, obj);
         if (methods) {
             obj.extend(methods);
         }
