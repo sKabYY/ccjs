@@ -6,14 +6,21 @@ var BasicObject = cc.BasicObject = allocObject().extend({ classname: 'BasicObjec
 
 var Class = cc.Class = allocObject().extend({ classname: 'Class' });
 
-var initClass = function (self, superclass, methodsOrInit) {
-    var getMethods = (function () {
-        if (cc.isFunction(methodsOrInit)) {
-            return methodsOrInit;
+var wrapAndSet = function (obj, values) {
+    if (cc.isFunction(values)) {
+        values = values.call(obj, obj);
+    }
+    (function (name, value) {
+        if (cc.isFunction(value)) {
+            obj[name] = value.bind(obj);
         } else {
-            return function () { return methodsOrInit; };
+            obj[name] = value;
         }
-    })();
+    }.overloadPluralSetter())(values);
+};
+
+var initClass = function (self, superclass, methods) {
+    self.super && self.super.initialize();
     var mkObj = (function () {
         if (superclass) {
             return function () {
@@ -27,32 +34,36 @@ var initClass = function (self, superclass, methodsOrInit) {
             return allocObject;
         }
     })();
-    var alloc = function () {
-        var obj = mkObj();
-        obj.$meta$ = { class: self };
-        var methods = getMethods.call(obj, obj);
-        if (methods) {
-            obj.extend(methods);
-        }
-        return obj;
-    };
     self.$meta$ = {
         class: Class,
-        alloc: alloc,
+        alloc: function () {
+            var obj = mkObj();
+            obj.$meta$ = { class: self };
+            wrapAndSet(obj, methods);
+            return obj;
+        },
         superclass: superclass
     };
     self.extend({
         new: function () {
-            var obj = alloc();
+            var obj = self.$meta$.alloc();
             if (obj.hasOwnProperty('initialize') && cc.isFunction(obj.initialize)) {
                 obj.initialize.apply(obj, arguments);
             }
             return obj;
         },
         extends: function (mthds) {
-            var cls = allocObject();
+            var cls = Class.$meta$.alloc();
             initClass(cls, self, mthds);
             return cls;
+        },
+        implement: function (mthds) {
+            var oldAlloc = self.$meta$.alloc;
+            self.$meta$.alloc = function () {
+                var obj = oldAlloc();
+                wrapAndSet(obj, mthds);
+                return obj;
+            };
         }
     });
 };
@@ -60,10 +71,16 @@ var initClass = function (self, superclass, methodsOrInit) {
 initClass(BasicObject, null, {
     initialize: Function.noop
 });
-initClass(Class, BasicObject, {
-    initialize: Function.noop
-});
 
-Class.new = function (methods) {
-    return BasicObject.extends(methods);
-};
+initClass(Class, BasicObject, null);
+
+Class.implement(function (cls) {
+    return {
+        initialize: function (methods) {
+            initClass(cls, BasicObject, methods);
+        },
+        include: function (Mixin) {
+            // TODO
+        }
+    };
+});
