@@ -20,6 +20,18 @@ QUnit.test('Class', function (assert) {
         'obj is instanceof BasicObject');
 });
 
+QUnit.test('extend', function (assert) {
+    var Cls = cc.Class.new();
+    var obj = Cls.new();
+    var X = 11, Y = 22;
+    invoke(obj.extend, [{
+        x: X,
+        y: Y
+    }]);
+    assert.equal(obj.x, X, 'obj.x === X');
+    assert.equal(obj.y, Y, 'obj.y === Y');
+});
+
 QUnit.test('instanceOf', function (assert) {
     var Test = cc.Class.new();
     var obj = Test.new();

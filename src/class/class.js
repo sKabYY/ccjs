@@ -1,11 +1,3 @@
-var allocObject = function () {
-    return {};
-};
-
-var BasicObject = cc.BasicObject = allocObject().extend({ classname: 'BasicObject' });
-
-var Class = cc.Class = allocObject().extend({ classname: 'Class' });
-
 var wrapAndSet = function (obj, values) {
     if (cc.isFunction(values)) {
         values = values.call(obj, obj);
@@ -19,14 +11,24 @@ var wrapAndSet = function (obj, values) {
     }.overloadPluralSetter())(values);
 };
 
-var initClass = function (self, superclass, methods) {
+var allocObject = function () {
+    var self = {};
+    self.extend = cc.setter(self).overloadSetter();
+    return self;
+};
+
+var BasicObject = cc.BasicObject = allocObject();
+
+var Class = cc.Class = allocObject();
+
+var initClass = function (self, superclass, methods, classname) {
     self.super && self.super.initialize();
     var mkObj = (function () {
         if (superclass) {
             return function () {
-                var constructor = function () {};
-                var proto = constructor.prototype = superclass.$meta$.alloc();
-                var obj = new constructor();
+                var ccObject = function () {};
+                var proto = ccObject.prototype = superclass.$meta$.alloc();
+                var obj = new ccObject();
                 obj.super =  proto;
                 return obj;
             };
@@ -52,9 +54,10 @@ var initClass = function (self, superclass, methods) {
             }
             return obj;
         },
-        Extends: function (mthds) {
+        name: Function.returnValue(classname || 'ccObject'),
+        Extends: function (mthds, name) {
             var cls = Class.$meta$.alloc();
-            initClass(cls, self, mthds);
+            initClass(cls, self, mthds, name);
             return cls;
         },
         implement: function (mthds) {
@@ -71,14 +74,14 @@ var initClass = function (self, superclass, methods) {
 
 initClass(BasicObject, null, {
     initialize: Function.noop
-});
+}, 'BasicObject');
 
-initClass(Class, BasicObject, null);
+initClass(Class, BasicObject, null, 'Class');
 
 Class.implement(function (cls) {
     return {
-        initialize: function (methods) {
-            initClass(cls, BasicObject, methods);
+        initialize: function (methods, classname) {
+            initClass(cls, BasicObject, methods, classname);
         },
         Include: function (Mixin) {
             Mixin.mixin(cls);
