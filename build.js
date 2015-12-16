@@ -8,7 +8,8 @@ var base_path = 'src';
 
 var core = 'core/core.js';
 var modules = [
-    'class/class.js'
+    'class/class.js',
+    'class/mixin.js'
 ];
 
 var read_src = function (file) {

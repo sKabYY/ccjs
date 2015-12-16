@@ -42,7 +42,7 @@ QUnit.test('inherit', function (assert) {
     var Sup = cc.Class.new({
         x: X
     });
-    var Sub = Sup.extends({
+    var Sub = Sup.Extends({
         y: Y
     });
     var sub = Sub.new();
@@ -60,7 +60,7 @@ QUnit.test('while new', function (assert) {
     Sup.new();
     Sup.new();
     assert.equal(res.length, 3, 'res.length === 3');
-    var Sub = Sup.extends(put);
+    var Sub = Sup.Extends(put);
     Sub.new();
     Sub.new();
     assert.equal(res.length, 7, 'res.length === 7');
@@ -76,13 +76,13 @@ QUnit.test('initialize', function (assert) {
     Sup.new();
     Sup.new();
     assert.equal(res.length, 3, 'res.length === 3');
-    var Sub = Sup.extends({
+    var Sub = Sup.Extends({
         initialize: put
     });
     Sub.new();
     Sub.new();
     assert.equal(res.length, 5, 'res.length === 5');
-    var Sub2 = Sup.extends(function (self) {
+    var Sub2 = Sup.Extends(function (self) {
         self.super.initialize();
         return {
             initialize: put
@@ -91,6 +91,23 @@ QUnit.test('initialize', function (assert) {
     Sub2.new();
     Sub2.new();
     assert.equal(res.length, 9, 'res.length === 9');
+});
+
+QUnit.test('initialize inherit', function (assert) {
+    var res = [];
+    var put = function () { res.push(0); };
+    var C1 = cc.Class.new({
+        initialize: put
+    });
+    var C2 = C1.Extends();
+    var C3 = C2.Extends({
+        initialize: function () {
+            this.super.initialize();
+            put();
+        }
+    });
+    C3.new();
+    assert.equal(res.length, 2, 'res.length === 2');
 });
 
 QUnit.test('initialize with params', function (assert) {
@@ -182,9 +199,22 @@ QUnit.test('fuck this', function (assert) {
 
 QUnit.test('Class implement include', function (assert) {
     var Sup = cc.Class.new();
-    assert.notEqual(Sup.include, undefined, 'Sup.include != undefined');
-    var Sub = Sup.extends();
-    assert.notEqual(Sub.include, undefined, 'Sub.include != undefined');
+    assert.notEqual(Sup.Include, undefined, 'Sup.include != undefined');
+    var Sub = Sup.Extends();
+    assert.notEqual(Sub.Include, undefined, 'Sub.include != undefined');
+});
+
+QUnit.test('implement', function (assert) {
+    var A = 111;
+    var Cls = cc.Class.new().implement(function (self) {
+        return {
+            a: 111,
+            f: function () { return self.a; }
+        };
+    });
+    var obj = Cls.new();
+    assert.equal(obj.a, A, 'obj.a === A');
+    assert.equal(obj.f(), A, 'obj.f() === A');
 });
 
 QUnit.test('chain', function (assert) {

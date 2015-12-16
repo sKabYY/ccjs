@@ -52,7 +52,7 @@ var initClass = function (self, superclass, methods) {
             }
             return obj;
         },
-        extends: function (mthds) {
+        Extends: function (mthds) {
             var cls = Class.$meta$.alloc();
             initClass(cls, self, mthds);
             return cls;
@@ -64,6 +64,7 @@ var initClass = function (self, superclass, methods) {
                 wrapAndSet(obj, mthds);
                 return obj;
             };
+            return self;
         }
     });
 };
@@ -79,8 +80,9 @@ Class.implement(function (cls) {
         initialize: function (methods) {
             initClass(cls, BasicObject, methods);
         },
-        include: function (Mixin) {
-            // TODO
+        Include: function (Mixin) {
+            Mixin.mixin(cls);
+            return cls;
         }
     };
 });
