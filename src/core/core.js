@@ -11,7 +11,7 @@ var cc = {};
         }
     };
 
-    cc.arrayEach = function (arr, proc) {
+    var arrayEach = cc.arrayEach = function (arr, proc) {
         for (var i = 0; i < arr.length; ++i) {
             proc(arr[i], i);
         }
@@ -24,22 +24,33 @@ var cc = {};
         };
     };
 
-    var typeOf = cc.typeOf = function (obj) {
-        // TODO
-        return typeof obj;
-    };
-    var isString = cc.isString = function (obj) {
-        return typeOf(obj) === 'string';
-    };
-    var isFunction = cc.isFunction = function (obj) {
-        return typeOf(obj) === 'function';
+    var jsTypeOf = function (obj) {
+        var typeStr = Object.prototype.toString.call(obj);
+        return /\[object (.*)]/.exec(typeStr)[1].toLowerCase();
     };
 
-    var isNumber = cc.isNumber = function (obj) {
-        return typeOf(obj) === 'number';
+    arrayEach([
+        'String',
+        'Function',
+        'Number'
+    ], function (typeName) {
+        cc['is' + typeName] = function (obj) {
+            return jsTypeOf(obj) === typeName.toLowerCase();
+        };
+    });
+
+    cc.typeOf = function (obj) {
+        if (obj &&
+            obj.$meta$ &&
+            obj.$meta$.class &&
+            cc.isFunction(obj.$meta$.class.name)) {
+            return obj.$meta$.class.name();
+        } else {
+            return jsTypeOf(obj);
+        }
     };
 
-    var instanceOf = cc.instanceOf = function (inst, cls) {
+    cc.instanceOf = function (inst, cls) {
         if (inst === null || inst === undefined) {
             return false;
         }
@@ -71,7 +82,7 @@ var cc = {};
         var pluralSet = setter.overloadPluralSetter();
         return function (a, val) {
             var self = this;
-            if (isString(a)) {
+            if (cc.isString(a)) {
                 setter.call(self, a, val);
             } else {
                 pluralSet.call(self, a);
@@ -113,6 +124,7 @@ var cc = {};
                         Array.from(arguments))));
             };
         }
+
     });
 
 
@@ -124,6 +136,14 @@ var cc = {};
             return function () {
                 return value;
             };
+        },
+
+        returnTrue: function () {
+            return true;
+        },
+
+        returnFalse: function () {
+            return false;
         }
 
     });
@@ -131,7 +151,7 @@ var cc = {};
     Array.extend({
         from: function (v) {
             var l = v.length;
-            if (!isNumber(l)) {
+            if (!cc.isNumber(l)) {
                 return [v];
             }
             var ret = [];

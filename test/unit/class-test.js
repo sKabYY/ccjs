@@ -64,6 +64,24 @@ QUnit.test('inherit', function (assert) {
     assert.equal(sub.x, newX, 'sub.x === newX');
 });
 
+QUnit.test('override', function (assert) {
+    var say = function (s) { say.content = s };
+    var Sup = cc.Class.new({
+        say: function () { say('Sup'); }
+    });
+    var Sub = Sup.Extends({
+        say: function () { say('Sub'); }
+    });
+    var sup = Sup.new();
+    var sub = Sub.new();
+    sup.say();
+    assert.equal(say.content, 'Sup', 'say Sup');
+    sub.say();
+    assert.equal(say.content, 'Sub', 'say Sub');
+    sub.super.say();
+    assert.equal(say.content, 'Sup', 'say Sup');
+});
+
 QUnit.test('while new', function (assert) {
     var res = [];
     var put = function () { res.push(0); };
@@ -263,4 +281,30 @@ QUnit.test('wrapper', function (assert) {
     invoke(obj.set, [{ y: newY }]);
     assert.equal(obj.x, newX, 'obj.x === newX');
     assert.equal(obj.y, newY, 'obj.y === newY');
+});
+
+QUnit.test('more typeOf', function (assert) {
+    var Cls = cc.Class.new();
+    var obj = Cls.new();
+    assert.equal(cc.typeOf(cc.Class), 'Class', 'cc.Class is Class');
+    assert.equal(cc.typeOf(Cls), 'Class', 'Cls is Class');
+    assert.equal(cc.typeOf(obj), 'ccObject', 'obj is ccObject');
+
+    obj = cc.BasicObject.new();
+    assert.equal(cc.typeOf(cc.BasicObject), 'Class',
+        'cc.BasicObject is Class');
+    assert.equal(cc.typeOf(obj), 'BasicObject',
+        'obj is BasicObject');
+
+    var BCls = cc.BasicObject.Extends();
+    assert.equal(cc.typeOf(BCls), 'Class', 'Cls is Class');
+    obj = BCls.new();
+    assert.equal(cc.typeOf(obj), 'ccObject', 'obj is ccObject');
+
+    var Test = cc.Class.new(null, 'Test');
+    var Sub1 = Test.Extends();
+    var Sub2 = Test.Extends(null, 'Sub2');
+    assert.equal(cc.typeOf(Test.new()), 'Test', 'Test.new() is Test');
+    assert.equal(cc.typeOf(Sub1.new()), 'ccObject', 'Sub1.new() is ccObject');
+    assert.equal(cc.typeOf(Sub2.new()), 'Sub2', 'Sub2.new() is Sub2');
 });

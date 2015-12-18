@@ -1,14 +1,32 @@
-var wrapAndSet = function (obj, values) {
+var setff = function (obj, values, transform, predict) {
     if (cc.isFunction(values)) {
         values = values.call(obj, obj);
     }
     (function (name, value) {
-        if (cc.isFunction(value)) {
-            obj[name] = value.bind(obj);
-        } else {
-            obj[name] = value;
+        if (predict(name, value)) {
+            obj[name] = transform(name, value);
         }
     }.overloadPluralSetter())(values);
+};
+
+var wrapAndSetWithPredict = function (obj, values, predict) {
+    setff(obj, values, function (name, value) {
+        if (cc.isFunction(value)) {
+            return value.bind(obj);
+        } else {
+            return value;
+        }
+    }, predict);
+};
+
+var wrapAndSet = function (obj, values) {
+    wrapAndSetWithPredict(obj, values, Function.returnTrue);
+};
+
+var wrapAndSetWithoutOverride = function (obj, values) {
+    wrapAndSetWithPredict(obj, values, function (name) {
+        return !obj.hasOwnProperty(name);
+    });
 };
 
 var allocObject = function () {
@@ -46,6 +64,15 @@ var initClass = function (self, superclass, methods, classname) {
         },
         superclass: superclass
     };
+    var implementf = function (mthds, setMethods) {
+        var allocOld = self.$meta$.alloc;
+        self.$meta$.alloc = function () {
+            var obj = allocOld();
+            setMethods(obj, mthds);
+            return obj;
+        };
+        return self;
+    };
     self.extend({
         new: function () {
             var obj = self.$meta$.alloc();
@@ -61,13 +88,10 @@ var initClass = function (self, superclass, methods, classname) {
             return cls;
         },
         implement: function (mthds) {
-            var oldAlloc = self.$meta$.alloc;
-            self.$meta$.alloc = function () {
-                var obj = oldAlloc();
-                wrapAndSet(obj, mthds);
-                return obj;
-            };
-            return self;
+            return implementf(mthds, wrapAndSet);
+        },
+        implementWithoutOverride: function (mthds) {
+            return implementf(mthds, wrapAndSetWithoutOverride);
         }
     });
 };

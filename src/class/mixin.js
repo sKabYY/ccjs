@@ -1,13 +1,22 @@
-
 cc.Mixin = cc.Class.new(function (self) {
-    var methods;
+    var doMixin;
     return {
-        initialize: function (mthds) {
+        initialize: function (methods) {
             self.super.initialize();
-            methods = mthds;
+            doMixin = function (cls) {
+                cls.implementWithoutOverride(methods);
+            };
         },
         mixin: function (cls) {
-            cls.implement(methods);
+            doMixin(cls);
+            return self;
+        },
+        Include: function (Mxn) {
+            var doMixinOld = doMixin;
+            doMixin = function (cls) {
+                doMixinOld(cls);
+                Mxn.mixin(cls);
+            };
             return self;
         }
     };
