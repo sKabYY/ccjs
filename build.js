@@ -9,7 +9,8 @@ var base_path = 'src';
 var core = 'core/core.js';
 var modules = [
     'class/class.js',
-    'class/mixin.js'
+    'class/mixin.js',
+    'class/eventuality.js'
 ];
 
 var read_src = function (file) {
@@ -40,3 +41,18 @@ fs.writeFileSync(
     path.join(dist_root, 'cc.core.js'),
     dist_src,
     'utf8');
+
+try {
+    console.log('\nRunning tests...');
+    require('./test/nodejs-test');
+} catch (e) {
+    if (e.code !== 'MODULE_NOT_FOUND') {
+        // Re-throw not "Module not found" errors
+        throw e;
+    }
+    if (e.message.indexOf('\'express\'') === -1) {
+        // Re-throw not found errors for other modules
+        throw e;
+    }
+    console.log('No tests found.');
+}

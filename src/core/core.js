@@ -1,19 +1,20 @@
 var cc = {};
+(module || {}).exports = cc;
 (function (cc) {
 
     var each = cc.each = function (obj, proc) {
         for (var k in obj) {
-            if (obj.hasOwnProperty(k)) {
-                if (proc(k, obj[k]) === false) {
-                    break;
-                }
+            if (proc.call(obj[k], k, obj[k]) === false) {
+                break;
             }
         }
     };
 
     var arrayEach = cc.arrayEach = function (arr, proc) {
         for (var i = 0; i < arr.length; ++i) {
-            proc(arr[i], i);
+            if (proc.call(arr[i], arr[i], i) === false) {
+                break;
+            };
         }
     };
 
@@ -32,6 +33,7 @@ var cc = {};
     arrayEach([
         'String',
         'Function',
+        'Array',
         'Number'
     ], function (typeName) {
         cc['is' + typeName] = function (obj) {
@@ -148,6 +150,13 @@ var cc = {};
 
     });
 
+    Array.implement({
+        each: function (proc) {
+            arrayEach(this, proc);
+            return this;
+        }
+    });
+
     Array.extend({
         from: function (v) {
             var l = v.length;
@@ -159,6 +168,12 @@ var cc = {};
                 ret.push(v[i]);
             }
             return ret;
+        }
+    });
+
+    String.implement({
+        startsWith: function (prefix) {
+            return this.indexOf(prefix) === 0;
         }
     });
 

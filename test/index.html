@@ -5,17 +5,33 @@
     <title>QUnit Example</title>
     <link rel="stylesheet" href="qunit/qunit-1.20.0.css">
 </head>
-<body>
+<body id="the-body">
 
 <div id="qunit"></div>
 <div id="qunit-fixture"></div>
 <script src="qunit/qunit-1.20.0.js"></script>
 <script src="qunit/demo.js"></script>
-<script src="utils/utils.js"></script>
+<script src="config.js"></script>
 <script src="../dist/cc.core.js"></script>
-<script src="unit/core-test.js"></script>
-<script src="unit/class-test.js"></script>
-<script src="unit/mixin-test.js"></script>
+
+<script>
+    var body = document.getElementById('the-body');
+    var addScript = function (script) {
+        var elem = document.createElement('script');
+        elem.src = script;
+        body.appendChild(elem);
+    };
+    ['utils', 'coreTest'].each(function (m) {
+        var scripts = testConfig[m];
+        if (cc.isString(scripts)) {
+            addScript(scripts);
+        } else {
+            scripts.each(function (script) {
+                addScript(script);
+            });
+        }
+    });
+</script>
 
 </body>
 </html>
