@@ -44,10 +44,9 @@ var initClass = function (self, superclass, methods, classname) {
     var mkObj = (function () {
         if (superclass) {
             return function () {
-                var ccObject = function () {};
-                var proto = ccObject.prototype = superclass.$meta$.alloc();
-                var obj = new ccObject();
-                obj.super =  proto;
+                var proto = superclass.$meta$.alloc();
+                var obj = Object.create(proto);
+                obj.super = proto;
                 return obj;
             };
         } else {

@@ -5,6 +5,7 @@ var Tester = (function () {
     var assertions = 0;
     var passed = 0;
     var mkAssert = function (testname) {
+        var count = 0;
         var fail = function (message, extraMsg, stack) {
             message = message || 'fail';
             extraMsg = extraMsg || 'fail';
@@ -13,6 +14,7 @@ var Tester = (function () {
         };
         var doAssert = function (result, message, extraMsg) {
             ++assertions;
+            ++count;
             if (!result) {
                 fail(message, extraMsg, new Error().stack);
             } else {
@@ -30,6 +32,11 @@ var Tester = (function () {
             notEqual: function (actual, expected, message) {
                 doAssert(actual !== expected, message,
                     'result=' + expected);
+            },
+            checkZeroAssertions: function () {
+                if (count === 0) {
+                    fail('warn', 'Expected at least one assertion, but none were run', new Error().stack);
+                }
             }
         };
     };
@@ -47,7 +54,9 @@ var Tester = (function () {
 
 QUnit = {
     test: function (testname, testproc) {
-        testproc(Tester.mkAssert(testname));
+        var assert = Tester.mkAssert(testname);
+        testproc(assert);
+        assert.checkZeroAssertions();
     }
 };
 

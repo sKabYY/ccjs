@@ -10,7 +10,7 @@ var core = 'core/core.js';
 var modules = [
     'class/class.js',
     'class/mixin.js',
-    'class/eventuality.js'
+    'class/events.js'
 ];
 
 var read_src = function (file) {

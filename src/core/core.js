@@ -14,7 +14,7 @@ var cc = {};
         for (var i = 0; i < arr.length; ++i) {
             if (proc.call(arr[i], arr[i], i) === false) {
                 break;
-            };
+            }
         }
     };
 

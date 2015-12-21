@@ -4,7 +4,7 @@ var testConfig = {
         'unit/core-test.js',
         'unit/class-test.js',
         'unit/mixin-test.js',
-        'unit/eventuality-test.js'
+        'unit/events-test.js'
     ]
 };
 
