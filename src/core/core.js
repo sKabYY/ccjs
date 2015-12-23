@@ -144,6 +144,7 @@ var cc = {};
 
     });
 
+
     Object.extend({
 
         clone: function (obj) {
@@ -156,12 +157,14 @@ var cc = {};
 
     });
 
+
     Array.implement({
         each: function (proc) {
             arrayEach(this, proc);
             return this;
         }
     });
+
 
     Array.extend({
         from: function (v) {
@@ -177,11 +180,13 @@ var cc = {};
         }
     });
 
+
     String.implement({
         startsWith: function (prefix) {
             return this.indexOf(prefix) === 0;
         }
     });
+
 
     return cc;
 
