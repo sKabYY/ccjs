@@ -67,3 +67,23 @@ QUnit.test('changes content', function (assert) {
     assert.equal(attrs.a, A1, 'attrs.a === A1');
     assert.equal(attrs.b, undefined, 'attrs.b === undefined');
 });
+
+QUnit.test('toJSON', function (assert) {
+    var A0 = 1, B0 = 2, A1 = 11, A2 = 22;
+    var model = cc.Model.new({
+        a: A0,
+        b: B0
+    });
+    var json = model.toJSON();
+    assert.equal(json.a, A0, 'json.a === A0');
+    assert.equal(json.b, B0, 'json.b === B0');
+    model.set('a', A1);
+    assert.equal(json.a, A0, 'json.a === A0 again');
+    assert.equal(json.b, B0, 'json.b === B0 again');
+    assert.equal(model.get('a'), A1, 'model.get("a") === A1');
+    assert.equal(model.get('b'), B0, 'model.get("b") === B0');
+    json.a = A2;
+    assert.equal(json.a, A2, 'json.a === A2');
+    assert.equal(json.b, B0, 'json.b === B0 again again');
+    assert.equal(model.get('a'), A1, 'model.get("a") === A1 again');
+});

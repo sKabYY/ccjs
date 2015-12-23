@@ -58,7 +58,7 @@ cc.Attributes = cc.Mixin.new(function (self) {
         },
 
         toJSON: function () {
-            // TODO
+            return Object.clone(attributes);
         }
 
     };

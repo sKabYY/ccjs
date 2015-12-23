@@ -144,6 +144,18 @@ var cc = {};
 
     });
 
+    Object.extend({
+
+        clone: function (obj) {
+            var cln = {};
+            cc.each(obj, function (k, v) {
+                cln[k] = v;
+            });
+            return cln;
+        }
+
+    });
+
     Array.implement({
         each: function (proc) {
             arrayEach(this, proc);
