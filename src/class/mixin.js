@@ -20,4 +20,4 @@ cc.Mixin = cc.Class.new(function (self) {
             return self;
         }
     };
-});
+}, 'Mixin');

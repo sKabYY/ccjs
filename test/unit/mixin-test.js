@@ -8,6 +8,8 @@ QUnit.test('mixin', function (assert) {
             getY: function () { return _y; }
         };
     });
+    assert.equal(cc.typeOf(MPosition), 'Mixin', 'typeOf MPosition is "Mixin"');
+    assert.ok(cc.instanceOf(MPosition, cc.Mixin), 'MPosition is instanceOf cc.Mixin');
     var X = 11, Y = 22, newX = 33, newY = 44;
     var Test = cc.Class.new(function (self) {
         return {

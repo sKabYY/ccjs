@@ -18,19 +18,13 @@ var cc = {};
         }
     };
 
-    cc.setter = function (obj) {
-        return function (a, b) {
-            obj[a] = b;
-            return obj;
-        };
-    };
-
     var jsTypeOf = function (obj) {
         var typeStr = Object.prototype.toString.call(obj);
         return /\[object (.*)]/.exec(typeStr)[1].toLowerCase();
     };
 
     arrayEach([
+        'Object',
         'String',
         'Function',
         'Array',

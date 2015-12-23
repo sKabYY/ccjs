@@ -2,6 +2,10 @@ QUnit.test('events', function (assert) {
     var A0 = 33, B0 = 44, A = 11, B = 22;
     var a = A0, b = B0;
     var dispatcher = cc.Dispatcher.new();
+    assert.equal(cc.typeOf(dispatcher), 'Dispatcher',
+        'typeOf dispatcher is "Dispatcher"');
+    assert.ok(cc.instanceOf(dispatcher, cc.Dispatcher),
+        'dispatcher is instanceOf cc.Dispatcher');
     dispatcher.trigger('test', [1, 2]);
     assert.equal(a, A0, 'a === A0');
     assert.equal(b, B0, 'a === B0');

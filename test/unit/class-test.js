@@ -250,7 +250,9 @@ QUnit.test('implement', function (assert) {
 QUnit.test('chain', function (assert) {
     var Cls = cc.Class.new(function (self) {
         return {
-            set: cc.setter(self).overloadSetter()
+            set: function (k, v) {
+                self[k] = v;
+            }.overloadSetter()
         };
     });
     var obj = Cls.new();

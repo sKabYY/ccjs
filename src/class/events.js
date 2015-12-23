@@ -95,4 +95,4 @@ cc.Events = cc.Mixin.new(function (self) {
 });
 
 
-cc.Dispatcher = cc.Class.new().Include(cc.Events);
+cc.Dispatcher = cc.Class.new(null, 'Dispatcher').Include(cc.Events);

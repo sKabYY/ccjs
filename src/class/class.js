@@ -31,7 +31,9 @@ var wrapAndSetWithoutOverride = function (obj, values) {
 
 var allocObject = function () {
     var self = {};
-    self.extend = cc.setter(self).overloadSetter();
+    self.extend = function (k, v) {
+        self[k] = v;
+    }.overloadSetter();
     return self;
 };
 
