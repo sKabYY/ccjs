@@ -2,7 +2,6 @@ cc.Mixin = cc.Class.new(function (self) {
     var doMixin;
     return {
         initialize: function (methods) {
-            self.super.initialize();
             doMixin = function (cls) {
                 cls.implementWithoutOverride(methods);
             };

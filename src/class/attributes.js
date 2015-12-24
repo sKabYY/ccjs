@@ -71,5 +71,5 @@ cc.Model = cc.Class.new(function (self) {
         initialize: function (attrs) {
             self.set(attrs, { silence: true });
         }
-    }
-}).Include(cc.Attributes);
+    };
+}, 'Model').Include(cc.Attributes);
