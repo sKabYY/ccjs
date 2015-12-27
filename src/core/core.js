@@ -1,5 +1,12 @@
 var cc = {};
-(module || {}).exports = cc;
+
+(function () {
+    if (typeof module !== 'undefined') {
+        module.exports = cc;
+    }
+})();
+
+
 (function (cc) {
 
     var each = cc.each = function (obj, proc) {

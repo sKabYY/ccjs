@@ -13,35 +13,50 @@ var modules = [
     'class/events.js',
     'class/attributes.js'
 ];
+var jWebModules = [
+    'jWeb/ViewModel.js'
+];
+
+if (!fs.existsSync(dist_root)) {
+    fs.mkdirSync(dist_root);
+}
 
 var read_src = function (file) {
     var p = path.join(base_path, file);
     return fs.readFileSync(p, 'utf8');
 };
 
-var core_src = read_src(core);
-var buf = [core_src];
-for (var i = 0; i < modules.length; ++i) {
-    (function (m) {
-        var src = read_src(m);
-        var new_src = '\n' +
-            '// file: ' + m + '\n' +
-            '(function (cc) {\n\n' +
-            '' + src + '\n' +
-            '})(cc);';
-        buf.push(new_src);
-    })(modules[i]);
-}
+var build_modules = function (fn, ms, buf) {
+    var buf = buf || [];
+    for (var i = 0; i < ms.length; ++i) {
+        (function (m) {
+            var src = read_src(m);
+            var new_src = '' +
+                '// file: ' + m + '\n' +
+                '(function (cc) {\n\n' +
+                '' + src + '\n' +
+                '})(cc);\n';
+            buf.push(new_src);
+        })(ms[i]);
+    }
+    var dist_src = buf.join('\n');
+    fs.writeFileSync(
+        path.join(dist_root, fn),
+        dist_src,
+        'utf8');
+};
 
-if (!fs.existsSync(dist_root)) {
-    fs.mkdirSync(dist_root);
-}
+var build_core = function () {
+    var core_src = read_src(core);
+    build_modules('cc.core.js', modules, [core_src + '\n']);
+};
 
-var dist_src = buf.join('\n');
-fs.writeFileSync(
-    path.join(dist_root, 'cc.core.js'),
-    dist_src,
-    'utf8');
+var build_jWeb = function () {
+    build_modules('cc.jWeb.js', jWebModules);
+};
+
+build_core();
+build_jWeb();
 
 try {
     console.log('\nRunning tests...');

@@ -26,6 +26,8 @@ QUnit.test('change events count', function (assert) {
     });
     model.set('a', 2);
     assert.equal(res.length, 2, 'res.length === 2');
+    model.set('a', 2);
+    assert.equal(res.length, 2, 'res.length === 2 again');
     model.set({ a: 3 });
     assert.equal(res.length, 4, 'res.length === 4');
     model.set('a', 4, { silence: true });
@@ -86,4 +88,18 @@ QUnit.test('toJSON', function (assert) {
     assert.equal(json.a, A2, 'json.a === A2');
     assert.equal(json.b, B0, 'json.b === B0 again again');
     assert.equal(model.get('a'), A1, 'model.get("a") === A1 again');
+});
+
+QUnit.test('set params', function (assert) {
+    var model = cc.Model.new({ a: 222 });
+    var ca = 0, cs = 1, EXTRA = 123;
+    model.on('change:a', function (_, _, extra) {
+        ca = extra;
+    });
+    model.on('changes', function (_, extra) {
+        cs = extra;
+    });
+    model.set('a', 2, { extra: EXTRA });
+    assert.equal(ca, EXTRA);
+    assert.equal(cs, EXTRA);
 });

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" id="html">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title>cc MVVM Test Suite</title>
+    <script src="../libs/jquery-1.11.3.js"></script>
+    <script src="../dist/cc.core.js"></script>
+    <script src="../dist/cc.jWeb.js"></script>
+    <style>
+        body>div {
+            width: 100%;
+            font-size: 0;
+        }
+        .panel {
+            display: inline-block;
+            font-size: 16px;
+        }
+        #left-panel {
+            width: 60%;
+        }
+        #show-panel {
+            width: 40%;
+        }
+    </style>
+</head>
+<body>
+<!-- input select textarea -->
+<div id="mvvm">
+    <div>
+        <div id="left-panel" class="panel">
+            <div><input cc-model="name" /></div>
+            <div><textarea cc-model="name"></textarea></div>
+        </div>
+        <div id="show-panel" class="panel">
+            <div>
+                <label>name | </label>
+                <span cc-bind="name"></span>
+            </div>
+            <div>
+                <input cc-model="name" />
+            </div>
+            <div>
+                <label>showName | </label>
+                <span cc-bind="showName"></span>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="test">test</div>
+<script>
+    var vm = cc.ViewModel.new({
+        name: 'skabyy',
+        showName: function (scope) {
+            return 'name:' + scope.get('name');
+        }
+    });
+    //vm.on('change:name', function (from, to) {
+    //    console.log('[change:name]', from, '->', to);
+    //});
+    vm.bibind('#mvvm');
+</script>
+</body>

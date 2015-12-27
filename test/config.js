@@ -9,4 +9,8 @@ var testConfig = {
     ]
 };
 
-(module || {}).exports = testConfig;
+(function () {
+    if (typeof module !== 'undefined') {
+        module.exports = testConfig;
+    }
+})();

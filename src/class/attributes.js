@@ -15,12 +15,16 @@ cc.Attributes = cc.Mixin.new(function (self) {
                 saveOldValue: function (key) {
                     previous = attributes[key];
                 },
-                saveAndTriggerChange: function (key, value) {
-                    changes[key] = value;
-                    self.trigger('change:' + key, [previous, value]);
+                saveAndTriggerChange: function (key, value, extra) {
+                    if (previous !== value) {
+                        changes[key] = value;
+                        self.trigger('change:' + key, [previous, value, extra]);
+                    }
                 },
-                triggerChanges: function () {
-                    self.trigger('changes', [changes]);
+                triggerChanges: function (extra) {
+                    if (Object.keys(changes).length > 0) {
+                        self.trigger('changes', [changes, extra]);
+                    }
                 },
                 reset: function () {
                     changes = {};
@@ -45,16 +49,17 @@ cc.Attributes = cc.Mixin.new(function (self) {
                 v = undefined;
             }
             options = options || {};
+            var extra = options['extra'];
 
             var changeEvents = mkChangeEvents(options.silence);
 
             (function (key, value) {
                 changeEvents.saveOldValue(key);
                 attributes[key] = value;
-                changeEvents.saveAndTriggerChange(key, value);
+                changeEvents.saveAndTriggerChange(key, value, extra);
             }.overloadSetter())(k, v);
 
-            changeEvents.triggerChanges();
+            changeEvents.triggerChanges(extra);
         },
 
         toJSON: function () {
