@@ -94,6 +94,7 @@ cc.ViewModel = cc.Class.new(function (self) {
         set: function () {
             model.set.apply(model, arguments);
         },
+
         get: function () {
             model.get.apply(model, arguments);
         }

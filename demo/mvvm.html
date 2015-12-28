@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" id="html">
+<html xmlns:cc="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" id="html">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -9,80 +9,98 @@
     <script src="../dist/cc.core.js"></script>
     <script src="../dist/cc.jWeb.js"></script>
     <style>
-        body>div {
-            width: 100%;
+        #mvvm {
+            width: 80%;
             font-size: 0;
+            margin: 0 auto;
+        }
+        #mvvm, pre {
+            font-family: cursive;
+        }
+        input, textarea {
+            font-family: monospace;
+            border: 1px solid #ddd;
+            padding: 2px;
+        }
+        .block {
+            border: 1px solid #ddd;
+            padding: 12px;
         }
         .panel {
             display: inline-block;
             font-size: 16px;
         }
         .left {
-            width: 60%;
+            width: 50%;
         }
         .right {
-            width: 40%;
+            width: 50%;
         }
     </style>
 </head>
 <body>
 <!-- input select textarea -->
 <div id="mvvm">
-    <div>
-        <div class="left panel">
-            <div><input cc-model="name" /></div>
-            <div><textarea cc-model="name"></textarea></div>
+    <div id="input-demo" class="block">
+        <div>
+            <div class="left panel">
+                <div>
+                    <label>First Name | </label>
+                    <span cc-bind="firstName"></span>
+                </div>
+                <div>
+                    <input cc-model="firstName" style="width: 80%;"/>
+                </div>
+                <div>
+                    <textarea cc-model="firstName" style="width: 80%;"></textarea>
+                </div>
+            </div>
+            <div class="right panel">
+                <div>
+                    <label>Second Name | </label>
+                    <span cc-bind="secondName"></span>
+                </div>
+                <div>
+                    <input cc-model="secondName" style="width: 80%;"/>
+                </div>
+                <div>
+                    <textarea cc-model="secondName" style="width: 80%;"></textarea>
+                </div>
+            </div>
         </div>
-        <div class="right panel">
-            <div>
-                <label>name | </label>
-                <span cc-bind="name"></span>
-            </div>
-            <div>
-                <input cc-model="name" />
-            </div>
-            <div>
-                <label>showName | </label>
-                <span cc-bind="showName"></span>
-            </div>
-        </div>
-    </div>
-    <hr/>
-    <div>
-        <div class="left panel">
-            <div><input cc-model="name1" /></div>
-            <div><textarea cc-model="name1"></textarea></div>
-        </div>
-        <div class="right panel">
-            <div>
-                <label>name | </label>
-                <span cc-bind="name1"></span>
-            </div>
-            <div>
-                <input cc-model="name1" />
-            </div>
-            <div>
-                <label>showName | </label>
-                <span cc-bind="showName1"></span>
-            </div>
+        <div style="text-align: center">
+            <pre class="panel" cc-bind="showName"
+                 style="border: 1px solid #ddd; padding: 2px 20px; text-align: left;">
+            </pre>
         </div>
     </div>
-    <hr/>
+    <div class="block">
+        <!--TODO-->
+        <select cc-model="" cc-datasource=""></select>
+        <select cc-model="" cc-datasource="" multiple></select>
+        <div cc-bind=""></div>
+    </div>
+    <div id="list-test" class="block">
+        <!--TODO-->
+        <script class="template" type="text/template">
+            <li></li>
+        </script>
+        <ul cc-datasource="languages" cc-template="#list-test .template"></ul>
+    </div>
 </div>
-<div id="test">test</div>
 <script>
     var vm = cc.ViewModel.new({
-        name: 'skabyy',
+        firstName: 'skabyy',
         showName: function (scope) {
-            return 'name:' + scope('name');
+            return 'Full Name:\n' + scope('firstName') + ' ' + scope('secondName');
         },
-        showName1: function (scope) {
-            return scope('name') + ' ' + scope('name1');
-        }
+        languages: [
+            'C/C++',
+            'Scheme',
+            'JavaScript',
+            'Ruby'
+        ]
     });
-    //vm.on('change:name', function (from, to) {
-    //    console.log('[change:name]', from, '->', to);
-    //});
     vm.bibind('#mvvm');
 </script>
 </body>
