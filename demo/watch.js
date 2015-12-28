@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var cc = require('../dist/cc.core.js');
 
 var getTick = function () {

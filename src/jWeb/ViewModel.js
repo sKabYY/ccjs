@@ -1,4 +1,4 @@
-cc.ViewModel = cc.Model.Extends(function (self) {
+cc.ViewModel = cc.Class.new(function (self) {
 
     var model = undefined;
     var processors = [];
