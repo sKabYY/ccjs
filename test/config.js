@@ -1,11 +1,14 @@
 var testConfig = {
-    utils: 'utils/utils.js',
+    utils: [ 'utils/utils.js' ],
     coreTest: [
         'unit/core-test.js',
         'unit/class-test.js',
         'unit/mixin-test.js',
         'unit/events-test.js',
         'unit/attributes-test.js'
+    ],
+    jWebTest: [
+        'unit/ViewModel-test.js'
     ]
 };
 

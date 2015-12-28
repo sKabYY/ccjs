@@ -1,5 +1,6 @@
 cc.ViewModel = cc.Model.Extends(function (self) {
 
+    var model = undefined;
     var processors = [];
 
     var process = function ($el) {
@@ -26,49 +27,47 @@ cc.ViewModel = cc.Model.Extends(function (self) {
 
     registerProcessor('model', 'input,textarea', function ($el, attrValue) {
         var setVal = function () {
-            var value = self.get(attrValue);
-            if (value === undefined || value === null) {
+            var value = model.get(attrValue);
+            if (value === undefined) {
                 value = '';
             }
             $el.val(value);
         };
         setVal();
-        self.on('change:' + attrValue, function (_, _, $owner) {
-            if (!$owner.is($el)) {
+        model.on('change:' + attrValue, function (_, _, $owner) {
+            if (!(cc.instanceOf($owner, $) && $owner.is($el))) {
                 setVal();
             }
         });
         $el.on('input change propertychange', function() {
-            self.set(attrValue, $el.val(), { extra: $el });
+            model.set(attrValue, $el.val(), { extra: $el });
         });
     });
 
     registerProcessor('bind', '*', function ($el, attrValue) {
         var setHtml = function (scope) {
-            var value = self.get(attrValue);
+            var value = model.get(attrValue);
             if (cc.isFunction(value)) {
                 value = value(scope);
             }
-            if (value === undefined || value === null) {
+            if (value === undefined) {
                 value = '';
             }
             $el.html(value);
         };
         var registerChangeEvent = function (key) {
-            self.on('change:' + key, function () {
-                setHtml(vm);
+            model.on('change:' + key, function () {
+                setHtml(model.get);
             });
         };
-        var dependencies = {};
         setHtml((function () {
-            return {
-                get: function (key) {
-                    if (!dependencies[key]) {
-                        dependencies[key] = true;
-                        registerChangeEvent(key);
-                    }
-                    return vm.get(key);
+            var dependencies = {};
+            return function (key) {
+                if (!dependencies[key]) {
+                    registerChangeEvent(key);
+                    dependencies[key] = true;
                 }
+                return model.get(key);
             };
         })());
         registerChangeEvent(attrValue);
@@ -76,8 +75,12 @@ cc.ViewModel = cc.Model.Extends(function (self) {
 
     return {
 
-        initialize: function (attrs) {
-            self.super.initialize(attrs);
+        initialize: function (m) {
+            if (cc.instanceOf(m, cc.Model)) {
+                model = m;
+            } else {
+                model = cc.Model.new(m);
+            }
         },
 
         bibind: function (view) {
@@ -85,6 +88,14 @@ cc.ViewModel = cc.Model.Extends(function (self) {
             $.merge($view.find('*'), $view).each(function(i, el) {
                 process($(el));
             });
+            return self;
+        },
+
+        set: function () {
+            model.set.apply(model, arguments);
+        },
+        get: function () {
+            model.get.apply(model, arguments);
         }
 
     };

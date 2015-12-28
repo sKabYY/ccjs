@@ -21,16 +21,18 @@
         elem.src = script;
         body.appendChild(elem);
     };
+    var loadTests = function (m) {
+        testConfig[m].each(function (script) {
+            addScript(script);
+        });
+    };
     ['utils', 'coreTest'].each(function (m) {
-        var scripts = testConfig[m];
-        if (cc.isString(scripts)) {
-            addScript(scripts);
-        } else {
-            scripts.each(function (script) {
-                addScript(script);
-            });
-        }
+        loadTests(m);
     });
+    // TODO: jWeb分开测试
+    loadTests('jWebTest');
+    addScript('../libs/jquery.js');
+    addScript('../dist/cc.jWeb.js');
 </script>
 
 </body>

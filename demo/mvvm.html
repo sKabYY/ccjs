@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <title>cc MVVM Test Suite</title>
-    <script src="../libs/jquery-1.11.3.js"></script>
+    <script src="../libs/jquery.js"></script>
     <script src="../dist/cc.core.js"></script>
     <script src="../dist/cc.jWeb.js"></script>
     <style>
@@ -17,10 +17,10 @@
             display: inline-block;
             font-size: 16px;
         }
-        #left-panel {
+        .left {
             width: 60%;
         }
-        #show-panel {
+        .right {
             width: 40%;
         }
     </style>
@@ -29,11 +29,11 @@
 <!-- input select textarea -->
 <div id="mvvm">
     <div>
-        <div id="left-panel" class="panel">
+        <div class="left panel">
             <div><input cc-model="name" /></div>
             <div><textarea cc-model="name"></textarea></div>
         </div>
-        <div id="show-panel" class="panel">
+        <div class="right panel">
             <div>
                 <label>name | </label>
                 <span cc-bind="name"></span>
@@ -47,13 +47,37 @@
             </div>
         </div>
     </div>
+    <hr/>
+    <div>
+        <div class="left panel">
+            <div><input cc-model="name1" /></div>
+            <div><textarea cc-model="name1"></textarea></div>
+        </div>
+        <div class="right panel">
+            <div>
+                <label>name | </label>
+                <span cc-bind="name1"></span>
+            </div>
+            <div>
+                <input cc-model="name1" />
+            </div>
+            <div>
+                <label>showName | </label>
+                <span cc-bind="showName1"></span>
+            </div>
+        </div>
+    </div>
+    <hr/>
 </div>
 <div id="test">test</div>
 <script>
     var vm = cc.ViewModel.new({
         name: 'skabyy',
         showName: function (scope) {
-            return 'name:' + scope.get('name');
+            return 'name:' + scope('name');
+        },
+        showName1: function (scope) {
+            return scope('name') + ' ' + scope('name1');
         }
     });
     //vm.on('change:name', function (from, to) {

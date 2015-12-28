@@ -173,3 +173,34 @@ QUnit.test('mixin initialize 2', function (assert) {
     assert.equal(contents.length, 1, 'put once');
     assert.equal(contents[0], cM, 'contents has cM');
 });
+
+QUnit.test('inherit with mixin', function (assert) {
+    var M = cc.Mixin.new({ f: function () {
+        return 'abc';
+    }});
+    var Sup = cc.Class.new().Include(M);
+    var Sub = Sup.Extends();
+    var sub = Sub.new();
+    assert.ok(sub.f, 'sub has method f');
+    assert.ok(sub.f(), 'abc', 'sub.f() === "abc"');
+});
+
+QUnit.test('inherit with mixin 2', function (assert) {
+    var M0 = cc.Mixin.new({
+        p: function () {
+            return 'ppp';
+        }
+    });
+    var M = cc.Mixin.new({
+        f: function () {
+            return 'abc';
+        }
+    }).Include(M0);
+    var Sup = cc.Class.new().Include(M);
+    var Sub = Sup.Extends();
+    var sub = Sub.new();
+    assert.ok(sub.f, 'sub has method f');
+    assert.ok(sub.f(), 'abc', 'sub.f() === "abc"');
+    assert.ok(sub.p, 'sub has method p');
+    assert.ok(sub.p(), 'abc', 'sub.p() === "ppp"');
+});
