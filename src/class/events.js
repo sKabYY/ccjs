@@ -21,8 +21,7 @@ cc.Events = cc.Mixin.new(function (self) {
     var mkMatch = function (namespace) {
         if (namespace) {
             return function (str) {
-                var idx = namespace.indexOf(str);
-                if (idx === 0) {
+                if (namespace.startsWith(str)) {
                     var c = namespace[str.length];
                     return !c || c === DELIM;
                 } else {
@@ -43,17 +42,19 @@ cc.Events = cc.Mixin.new(function (self) {
     return {
 
         on: function (type, method) {
-            splitType(type, function (name, namespace) {
-                var handler = {
-                    method: method,
-                    nsmatcher: mkMatch(namespace)
-                };
-                if (registry.hasOwnProperty(name)) {
-                    registry[name].push(handler);
-                } else {
-                    registry[name] = [handler];
-                }
-            });
+            if (type) {
+                splitType(type, function (name, namespace) {
+                    var handler = {
+                        method: method,
+                        nsmatcher: mkMatch(namespace)
+                    };
+                    if (registry.hasOwnProperty(name)) {
+                        registry[name].push(handler);
+                    } else {
+                        registry[name] = [handler];
+                    }
+                });
+            }
             return self;
         },
 

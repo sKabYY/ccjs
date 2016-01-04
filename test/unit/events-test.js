@@ -135,4 +135,15 @@ QUnit.test('off all', function (assert) {
     assert.equal(a, A0, 'a === A0');
 });
 
-// TODO
+QUnit.test('empty event', function (assert) {
+    var A0 = 1, A1 = 12;
+    var a = A0;
+    var dispatcher = cc.Dispatcher.new();
+    dispatcher.on('', function (newA) {
+        a = newA;
+    });
+    dispatcher.trigger('', [A1]);
+    assert.equal(a, A0, 'a === A0');
+    dispatcher.trigger('abc', [A1]);
+    assert.equal(a, A0, 'a === A0 again');
+});
