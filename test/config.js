@@ -5,7 +5,8 @@ var testConfig = {
         'unit/class-test.js',
         'unit/mixin-test.js',
         'unit/events-test.js',
-        'unit/attributes-test.js'
+        'unit/model-test.js',
+        'unit/collection-test.js'
     ],
     jWebTest: [
         'unit/ViewModel-test.js'

@@ -41,3 +41,5 @@ QUnit.test('cc-bind with function', function (assert) {
     vm.set('name', NAME);
     assert.equal($el.find('span').html(), 'xxx' + NAME, 'span = xxxNAME again');
 });
+
+// TODO: test cc-datasource, cc-template

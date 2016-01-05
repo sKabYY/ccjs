@@ -11,7 +11,8 @@ var modules = [
     'class/class.js',
     'class/mixin.js',
     'class/events.js',
-    'class/attributes.js'
+    'class/attributes.js',
+    'class/collection.js'
 ];
 var jWebModules = [
     'jWeb/ViewModel.js'

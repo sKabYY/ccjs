@@ -37,7 +37,7 @@ var allocObject = function () {
     return self;
 };
 
-var BasicObject = cc.BasicObject = allocObject();
+var BasicObject = cc.Object = cc.BasicObject = allocObject();
 
 var Class = cc.Class = allocObject();
 

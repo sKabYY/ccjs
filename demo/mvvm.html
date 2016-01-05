@@ -28,6 +28,8 @@
         }
         .panel {
             display: inline-block;
+        }
+        .with-text {
             font-size: 16px;
         }
         .left {
@@ -43,7 +45,7 @@
 <div id="mvvm">
     <div id="input-demo" class="block">
         <div>
-            <div class="left panel">
+            <div class="left panel with-text">
                 <div>
                     <label>First Name | </label>
                     <span cc-bind="firstName"></span>
@@ -55,7 +57,7 @@
                     <textarea cc-model="firstName" style="width: 80%;"></textarea>
                 </div>
             </div>
-            <div class="right panel">
+            <div class="right panel with-text">
                 <div>
                     <label>Second Name | </label>
                     <span cc-bind="secondName"></span>
@@ -69,23 +71,33 @@
             </div>
         </div>
         <div style="text-align: center">
-            <pre class="panel" cc-bind="showName"
+            <pre class="panel with-text" cc-bind="showName"
                  style="border: 1px solid #ddd; padding: 2px 20px; text-align: left;">
             </pre>
         </div>
     </div>
-    <div class="block">
+    <div class="block with-text">
         <!--TODO-->
         <select cc-model="" cc-datasource=""></select>
         <select cc-model="" cc-datasource="" multiple></select>
         <div cc-bind=""></div>
     </div>
     <div id="list-test" class="block">
-        <!--TODO-->
         <script class="template" type="text/template">
-            <li></li>
+            <li><span cc-bind="showPrefix"></span><span cc-bind="value"></span></li>
         </script>
-        <ul cc-datasource="languages" cc-template="#list-test .template"></ul>
+        <div class="with-text">
+            <!-- with undefined datasource -->
+            <ul cc-datasource="undefined" cc-template="#list-test .template"></ul>
+            <!-- with undefined template -->
+            <ul cc-datasource="languages" cc-template="undefined"></ul>
+        </div>
+        <div class="left panel with-text">
+            <ul cc-datasource="languages" cc-template="#list-test .template"></ul>
+        </div>
+        <div class="right panel with-text">
+            <ul cc-datasource="languages" cc-template="#list-test .template"></ul>
+        </div>
     </div>
 </div>
 <script>
@@ -95,7 +107,18 @@
             return 'Full Name:\n' + scope('firstName') + ' ' + scope('secondName');
         },
         languages: [
-            'C/C++',
+            {
+                value: 'C/C++',
+                prefix: 'evil',
+                showPrefix: function (scope) {
+                    var prefix = scope('prefix');
+                    if (prefix) {
+                        return prefix + ' ';
+                    } else {
+                        return '';
+                    }
+                }
+            },
             'Scheme',
             'JavaScript',
             'Ruby'

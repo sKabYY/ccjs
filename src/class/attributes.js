@@ -74,7 +74,9 @@ cc.Attributes = cc.Mixin.new(function (self) {
 cc.Model = cc.Class.new(function (self) {
     return {
         initialize: function (attrs) {
-            self.set(attrs, { silence: true });
+            self.set(
+                cc.isObject(attrs) ? attrs : { value: attrs },
+                { silence: true });
         }
     };
 }, 'Model').Include(cc.Attributes);

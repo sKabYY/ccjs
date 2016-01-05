@@ -1,4 +1,4 @@
-QUnit.test('attributes get & set', function (assert) {
+QUnit.test('model get & set', function (assert) {
     var A0 = 11, B0 = 21, A1 = 12, B1 = 22;
     var model = cc.Model.new({
         a: A0,

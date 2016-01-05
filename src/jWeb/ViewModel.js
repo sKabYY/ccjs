@@ -3,50 +3,57 @@ cc.ViewModel = cc.Class.new(function (self) {
     var model = undefined;
     var processors = [];
 
-    var process = function ($el) {
-        processors.each(function (processor) {
-            if (processor.match($el)) {
-                processor.process($el);
-            }
+    var bibind = function (ctx, $view) {
+        $.merge($view.find('*'), $view).each(function(_, el) {
+            var $el = $(el);
+            processors.each(function (processor) {
+                if (processor.match($el)) {
+                    processor.process(ctx, $el);
+                }
+            });
         });
     };
 
+    var typeNameToAttr = function (typename) {
+        return 'cc-' + typename;
+    };
+
     var registerProcessor = function (typename, selector, proc) {
-        var type = 'cc-' + typename;
+        var attr = typeNameToAttr(typename);
         var processor = {
             match: function ($el) {
-                return $el.attr(type) !== undefined && $el.is(selector);
+                return $el.attr(attr) !== undefined && $el.is(selector);
             },
-            process: function ($el) {
-                var attrValue = $el.attr(type);
-                proc($el, attrValue);
+            process: function (ctx, $el) {
+                var attrValue = $el.attr(attr);
+                proc(ctx, $el, attrValue);
             }
         };
         processors.push(processor);
     };
 
-    registerProcessor('model', 'input,textarea', function ($el, attrValue) {
+    registerProcessor('model', 'input,textarea', function (ctx, $el, attrValue) {
         var setVal = function () {
-            var value = model.get(attrValue);
+            var value = ctx.get(attrValue);
             if (value === undefined) {
                 value = '';
             }
             $el.val(value);
         };
         setVal();
-        model.on('change:' + attrValue, function (_, _, $owner) {
+        ctx.on('change:' + attrValue, function (_, _, $owner) {
             if (!(cc.instanceOf($owner, $) && $owner.is($el))) {
                 setVal();
             }
         });
         $el.on('input change propertychange', function() {
-            model.set(attrValue, $el.val(), { extra: $el });
+            ctx.set(attrValue, $el.val(), { extra: $el });
         });
     });
 
-    registerProcessor('bind', '*', function ($el, attrValue) {
+    registerProcessor('bind', '*', function (ctx, $el, attrValue) {
         var setHtml = function (scope) {
-            var value = model.get(attrValue);
+            var value = ctx.get(attrValue);
             if (cc.isFunction(value)) {
                 value = value(scope);
             }
@@ -56,8 +63,8 @@ cc.ViewModel = cc.Class.new(function (self) {
             $el.html(value);
         };
         var registerChangeEvent = function (key) {
-            model.on('change:' + key, function () {
-                setHtml(model.get);
+            ctx.on('change:' + key, function () {
+                setHtml(ctx.get);
             });
         };
         setHtml((function () {
@@ -67,10 +74,36 @@ cc.ViewModel = cc.Class.new(function (self) {
                     registerChangeEvent(key);
                     dependencies[key] = true;
                 }
-                return model.get(key);
+                return ctx.get(key);
             };
         })());
         registerChangeEvent(attrValue);
+    });
+
+    registerProcessor('template', '*', function (ctx, $el, attrValue){
+        var template = $(attrValue).html();
+        var dsName = $el.attr(typeNameToAttr('datasource'));
+        var array = ctx.get(dsName);
+        // TODO: if array is a collection
+        var ds = array;
+        if (ds) {
+            var onAdded = function (m) {
+                var $dom = $(template);
+                bibind(m, $dom);
+                $el.append($dom);
+            };
+            if (!cc.instanceOf(ds, cc.Collection)) {
+                ds = cc.Collection.new();
+                $el.empty();
+                array.each(function (d) {
+                    ds.add(d);
+                });
+                ctx.set(dsName, ds, { silence: true });
+            }
+            ds.each(function (m) {
+                onAdded(m);
+            }).on('add', onAdded);
+        }
     });
 
     return {
@@ -85,9 +118,7 @@ cc.ViewModel = cc.Class.new(function (self) {
 
         bibind: function (view) {
             var $view = $(view);
-            $.merge($view.find('*'), $view).each(function(i, el) {
-                process($(el));
-            });
+            bibind(model, $view);
             return self;
         },
 
