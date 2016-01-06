@@ -82,26 +82,41 @@ cc.DomBiBinder = cc.Class.new(function (self) {
     registerProcessor('template', '*', function (ctx, $el, attrValue){
         var template = $(attrValue).html();
         var dsName = $el.attr(typeNameToAttr('datasource'));
-        var array = ctx.get(dsName);
-        var ds = array;
-        if (ds) {
-            if (!cc.instanceOf(ds, cc.Collection)) {
-                ds = cc.Collection.new();
-                $el.empty();
-                array.each(function (d) {
-                    ds.add(d);
+        var setCollection = function () {
+            var array = ctx.get(dsName);
+            var ds = array;
+            var ATTR_MODEL_ID = 'cc-model-id';
+            $el.empty();
+            if (ds) {
+                if (!cc.instanceOf(ds, cc.Collection)) {
+                    ds = cc.Collection.new();
+                    ds.add.apply(ds, array);
+                    ctx.set(dsName, ds, { silence: true });
+                }
+                var onAdded = function (m) {
+                    var $dom = $(template);
+                    bibind(m, $dom);
+                    $dom.attr(ATTR_MODEL_ID, m.id());
+                    $el.append($dom);
+                };
+                ds.each(function (m) {
+                    onAdded(m);
+                }).on('add', function (ms) {
+                    ms.each(onAdded);
+                }).on('remove', function (ms) {
+                    ms.each(function (m) {
+                        $el.find('[{attrName}="{attrValue}"]'.format({
+                            attrName: ATTR_MODEL_ID,
+                            attrValue: m.id()
+                        })).remove();
+                    });
                 });
-                ctx.set(dsName, ds, { silence: true });
             }
-            var onAdded = function (m) {
-                var $dom = $(template);
-                bibind(m, $dom);
-                $el.append($dom);
-            };
-            ds.each(function (m) {
-                onAdded(m);
-            }).on('add', onAdded);
-        }
+        };
+        ctx.on('change:' + dsName, function () {
+            setCollection();
+        });
+        setCollection();
     });
 
     return {

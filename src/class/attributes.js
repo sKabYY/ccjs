@@ -70,13 +70,23 @@ cc.Attributes = cc.Mixin.new(function (self) {
 
 }).Include(cc.Events);
 
-
+var counter = (function () {
+    var i = 0;
+    return function () {
+        ++i;
+        return i;
+    };
+})();
 cc.Model = cc.Class.new(function (self) {
+    var id = 'm-' + counter();
     return {
         initialize: function (attrs) {
             self.set(
                 cc.isObject(attrs) ? attrs : { value: attrs },
                 { silence: true });
+        },
+        id: function () {
+            return id;
         }
     };
 }, 'Model').Include(cc.Attributes);

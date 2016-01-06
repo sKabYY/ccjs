@@ -169,6 +169,17 @@ var cc = {};
         each: function (proc) {
             arrayEach(this, proc);
             return this;
+        },
+        partition: function (predicate) {
+            var pass = [], fail = [];
+            this.each(function (v) {
+                (predicate(v) ? pass : fail).push(v);
+            });
+            return [pass, fail];
+        },
+        append: function (array) {
+            this.push.apply(this, array);
+            return this;
         }
     });
 
@@ -191,6 +202,14 @@ var cc = {};
     String.implement({
         startsWith: function (prefix) {
             return this.indexOf(prefix) === 0;
+        },
+        format: function (ctx) {
+            var s = this;
+            cc.each(ctx, function (k, v) {
+                var reg = new RegExp('{' + k + '}', 'g');
+                s = s.replace(reg, v);
+            });
+            return s;
         }
     });
 

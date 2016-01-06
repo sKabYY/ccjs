@@ -1,30 +1,30 @@
-var setff = function (obj, values, transform, predict) {
+var setff = function (obj, values, transform, predicate) {
     if (cc.isFunction(values)) {
         values = values.call(obj, obj);
     }
     (function (name, value) {
-        if (predict(name, value)) {
+        if (predicate(name, value)) {
             obj[name] = transform(name, value);
         }
     }.overloadPluralSetter())(values);
 };
 
-var wrapAndSetWithPredict = function (obj, values, predict) {
+var wrapAndSetWithPredicate = function (obj, values, predicate) {
     setff(obj, values, function (name, value) {
         if (cc.isFunction(value)) {
             return value.bind(obj);
         } else {
             return value;
         }
-    }, predict);
+    }, predicate);
 };
 
 var wrapAndSet = function (obj, values) {
-    wrapAndSetWithPredict(obj, values, Function.returnTrue);
+    wrapAndSetWithPredicate(obj, values, Function.returnTrue);
 };
 
 var wrapAndSetWithoutOverride = function (obj, values) {
-    wrapAndSetWithPredict(obj, values, function (name) {
+    wrapAndSetWithPredicate(obj, values, function (name) {
         return !obj.hasOwnProperty(name);
     });
 };

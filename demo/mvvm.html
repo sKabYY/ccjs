@@ -78,8 +78,8 @@
     </div>
     <div class="block with-text">
         <!--TODO-->
-        <select cc-model="" cc-datasource=""></select>
-        <select cc-model="" cc-datasource="" multiple></select>
+        <select cc-model="" cc-datasource="languages"></select>
+        <select cc-model="" cc-datasource="languages" multiple></select>
         <div cc-bind=""></div>
     </div>
     <div id="list-test" class="block">
@@ -101,7 +101,7 @@
     </div>
 </div>
 <script>
-    cc.domBiBinder.bibind({
+    var vm = cc.domBiBinder.bibind({
         firstName: 'skabyy',
         showName: function (scope) {
             return 'Full Name:\n' + scope('firstName') + ' ' + scope('secondName');
@@ -124,5 +124,20 @@
             'Ruby'
         ]
     }, '#mvvm');
+
+    var languages = vm.get('languages');
+    (function () {
+        var PYTHON = 'Python';
+        setTimeout(function () {
+            languages.add(PYTHON);
+            languages.at(0).set({ prefix: 'hehe' });
+        }, 1000);
+        setTimeout(function () {
+            languages.removeIf(function (m) {
+                return m.get('value') === PYTHON;
+            });
+            languages.at(0).set({ prefix: 'evil' });
+        }, 2000);
+    })();
 </script>
 </body>

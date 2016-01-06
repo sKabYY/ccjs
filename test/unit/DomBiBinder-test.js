@@ -20,6 +20,19 @@ QUnit.test('DomBiBinder', function (assert) {
     assert.equal($el.find('span').html(), NAME, 'span = NAME again');
 });
 
+QUnit.test('registerProcessor', function (assert) {
+    var dbb = cc.DomBiBinder.new();
+    dbb.registerProcessor('hello', '*', function (ctx, $el, attrValue) {
+        $el.html('Hello ' + ctx.get(attrValue) + '!');
+    });
+    var html = '<div cc-hello="name"></div>';
+    var $el = $(html);
+    $('#qunit-fixture').append($el);
+    var NAME = 'Han Meimei';
+    dbb.bibind({ name: NAME}, $el);
+    assert.equal($el.html(), 'Hello ' + NAME + '!', 'Hello, Han Meimei!');
+});
+
 QUnit.test('cc-bind with function', function (assert) {
     var html = '' +
         '<div>' +
@@ -71,7 +84,6 @@ QUnit.test('cc-datasource cc-template', function (assert) {
         '    </script>' +
         '    <ul cc-datasource="languages" cc-template="#tpl"></ul>' +
         '</div>';
-    //html = '<div></div>';
     var $el = $(html);
     $('#qunit-fixture').append($el);
     var vm = cc.domBiBinder.bibind({
@@ -103,6 +115,22 @@ QUnit.test('cc-datasource cc-template', function (assert) {
     })();
     assert.equal(contentOfFirstLi, 'evil C/C++',
         'the content of first li is "evil C/C++"');
+    vm.get('languages').add('Python');
+    assert.equal($el.find('ul li').length, vm.get('languages').count(),
+        'the number of lis === languages.length after added');
+    vm.get('languages').remove(function (m) {
+        return m.value === 'Python';
+    });
+    assert.equal($el.find('ul li').length, vm.get('languages').count(),
+        'the number of lis === languages.length after removed');
+    vm.set('languages', ['Chinese', 'English']);
+    assert.equal($el.find('ul li').length, 2,
+        'the number of lis === 2 after set');
+    assert.equal($el.find('ul li span[cc-bind="value"]').html(), 'Chinese',
+        'the content of first li is "Chinese"');
+    vm.get('languages').at(0).set('value', 'XXX');
+    assert.equal($el.find('ul li span[cc-bind="value"]').html(), 'XXX',
+        'the content of first li is "XXX"');
 });
 
 // TODO: test cc-datasource, cc-template

@@ -105,3 +105,11 @@ QUnit.test('multipleSetter', function (assert) {
     assert.equal(obj2.x, 33, 'obj2.x === 33 after set nothing');
     assert.equal(obj2.y, 44, 'obj2.y === 44 after set nothing');
 });
+
+QUnit.test('string.format', function (assert) {
+    var s = '{a}{b}{c}'.format({
+        a: 1,
+        b: 2
+    });
+    assert.equal(s, '12{c}', 's === "12{c}"');
+});
