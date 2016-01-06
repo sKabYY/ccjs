@@ -1,6 +1,5 @@
-cc.ViewModel = cc.Class.new(function (self) {
+cc.DomBiBinder = cc.Class.new(function (self) {
 
-    var model = undefined;
     var processors = [];
 
     var bibind = function (ctx, $view) {
@@ -41,13 +40,13 @@ cc.ViewModel = cc.Class.new(function (self) {
             $el.val(value);
         };
         setVal();
-        ctx.on('change:' + attrValue, function (_, _, $owner) {
-            if (!(cc.instanceOf($owner, $) && $owner.is($el))) {
+        ctx.on('change:' + attrValue, function (_, _, args) {
+            if (!(cc.isObject(args) && cc.instanceOf(args.sender, $) && args.sender.is($el))) {
                 setVal();
             }
         });
         $el.on('input change propertychange', function() {
-            ctx.set(attrValue, $el.val(), { extra: $el });
+            ctx.set(attrValue, $el.val(), { extra: { sender: $el } });
         });
     });
 
@@ -84,14 +83,8 @@ cc.ViewModel = cc.Class.new(function (self) {
         var template = $(attrValue).html();
         var dsName = $el.attr(typeNameToAttr('datasource'));
         var array = ctx.get(dsName);
-        // TODO: if array is a collection
         var ds = array;
         if (ds) {
-            var onAdded = function (m) {
-                var $dom = $(template);
-                bibind(m, $dom);
-                $el.append($dom);
-            };
             if (!cc.instanceOf(ds, cc.Collection)) {
                 ds = cc.Collection.new();
                 $el.empty();
@@ -100,6 +93,11 @@ cc.ViewModel = cc.Class.new(function (self) {
                 });
                 ctx.set(dsName, ds, { silence: true });
             }
+            var onAdded = function (m) {
+                var $dom = $(template);
+                bibind(m, $dom);
+                $el.append($dom);
+            };
             ds.each(function (m) {
                 onAdded(m);
             }).on('add', onAdded);
@@ -107,29 +105,19 @@ cc.ViewModel = cc.Class.new(function (self) {
     });
 
     return {
-
-        initialize: function (m) {
-            if (cc.instanceOf(m, cc.Model)) {
-                model = m;
-            } else {
-                model = cc.Model.new(m);
+        bibind: function (model, view) {
+            if (!cc.instanceOf(model, cc.Model)) {
+                model = cc.Model.new(model);
             }
+            bibind(model, $(view));
+            return model;
         },
-
-        bibind: function (view) {
-            var $view = $(view);
-            bibind(model, $view);
+        registerProcessor: function (typename, selector, processor) {
+            registerProcessor(typename, selector, processor);
             return self;
-        },
-
-        set: function () {
-            model.set.apply(model, arguments);
-        },
-
-        get: function () {
-            model.get.apply(model, arguments);
         }
-
-    };
+    }
 
 });
+
+cc.domBiBinder = cc.DomBiBinder.new();

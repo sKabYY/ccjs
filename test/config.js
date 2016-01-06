@@ -9,7 +9,7 @@ var testConfig = {
         'unit/collection-test.js'
     ],
     jWebTest: [
-        'unit/ViewModel-test.js'
+        'unit/DomBiBinder-test.js'
     ]
 };
 

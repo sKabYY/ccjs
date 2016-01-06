@@ -101,7 +101,7 @@
     </div>
 </div>
 <script>
-    var vm = cc.ViewModel.new({
+    cc.domBiBinder.bibind({
         firstName: 'skabyy',
         showName: function (scope) {
             return 'Full Name:\n' + scope('firstName') + ' ' + scope('secondName');
@@ -123,7 +123,6 @@
             'JavaScript',
             'Ruby'
         ]
-    });
-    vm.bibind('#mvvm');
+    }, '#mvvm');
 </script>
 </body>

@@ -15,7 +15,7 @@ var modules = [
     'class/collection.js'
 ];
 var jWebModules = [
-    'jWeb/ViewModel.js'
+    'jWeb/DomBiBinder.js'
 ];
 
 if (!fs.existsSync(dist_root)) {
