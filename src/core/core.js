@@ -42,6 +42,10 @@ var cc = {};
         };
     });
 
+    var isNullOrUndefined = cc.isNullOrUndefined = function (v) {
+        return v === null || v === undefined;
+    };
+
     cc.typeOf = function (obj) {
         if (obj &&
             obj.$meta$ &&
@@ -54,7 +58,7 @@ var cc = {};
     };
 
     cc.instanceOf = function (inst, cls) {
-        if (inst === null || inst === undefined) {
+        if (isNullOrUndefined(inst)) {
             return false;
         }
         if (cc.isFunction(cls)) {

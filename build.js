@@ -8,6 +8,7 @@ var base_path = 'src';
 
 var core = 'core/core.js';
 var modules = [
+    'core/utils.js',
     'class/class.js',
     'class/mixin.js',
     'class/events.js',
