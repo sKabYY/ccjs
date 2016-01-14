@@ -17,6 +17,10 @@ cc.Collection = cc.Class.new(function (self) {
             self.trigger('add', [ms]);
         },
 
+        addRange: function (ms) {
+            self.add.apply(self, ms);
+        },
+
         removeIf: function (predicate) {
             (function (pass, fail) {
                 array = fail;

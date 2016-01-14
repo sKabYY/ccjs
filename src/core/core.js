@@ -11,7 +11,7 @@ var cc = {};
 
     var each = cc.each = function (obj, proc) {
         for (var k in obj) {
-            if (proc.call(obj[k], k, obj[k]) === false) {
+            if (proc.call(null, k, obj[k]) === false) {
                 break;
             }
         }
@@ -19,7 +19,7 @@ var cc = {};
 
     var arrayEach = cc.arrayEach = function (arr, proc) {
         for (var i = 0; i < arr.length; ++i) {
-            if (proc.call(arr[i], arr[i], i) === false) {
+            if (proc.call(null, arr[i], i) === false) {
                 break;
             }
         }
@@ -62,7 +62,7 @@ var cc = {};
             return false;
         }
         if (cc.isFunction(cls)) {
-            return inst instanceof cls;
+            return inst.constructor === cls || inst instanceof cls;
         }
         var c = inst.$meta$ && inst.$meta$.class;
         while (c) {

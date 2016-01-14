@@ -310,3 +310,18 @@ QUnit.test('more typeOf', function (assert) {
     assert.equal(cc.typeOf(Sub1.new()), 'ccObject', 'Sub1.new() is ccObject');
     assert.equal(cc.typeOf(Sub2.new()), 'Sub2', 'Sub2.new() is Sub2');
 });
+
+QUnit.test('test self', function (assert) {
+    var C = cc.Class.new({
+        f1: function () { return 1; }
+    });
+    C.implement(function (self) {
+        self.x = 233;
+        return {
+            f2: function () { return self.f1() + 1; }
+        };
+    });
+    var obj = C.new();
+    assert.equal(obj.f2(), 2, 'obj.f2() === 2');
+    assert.equal(obj.x, 233, 'obj.x === 233');
+});

@@ -18,6 +18,12 @@ QUnit.test('DomBiBinder', function (assert) {
     vm.set('name', NAME);
     assert.equal($el.find('input').val(), NAME, 'input = NAME again');
     assert.equal($el.find('span').html(), NAME, 'span = NAME again');
+    vm.set('name', false);
+    assert.equal($el.find('input').val(), 'false', 'input = "false"');
+    assert.equal($el.find('span').html(), 'false', 'span = "false"');
+    vm.set('name', null);
+    assert.equal($el.find('input').val(), '', 'input = ""');
+    assert.equal($el.find('span').html(), '', 'span = ""');
 });
 
 QUnit.test('registerProcessor', function (assert) {
@@ -133,4 +139,4 @@ QUnit.test('cc-datasource cc-template', function (assert) {
         'the content of first li is "XXX"');
 });
 
-// TODO: test cc-datasource, cc-template
+// TODO: test cc-events

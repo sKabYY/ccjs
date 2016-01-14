@@ -56,8 +56,10 @@ cc.DomBiBinder = cc.Class.new(function (self) {
             if (cc.isFunction(value)) {
                 value = value(scope);
             }
-            if (value === undefined) {
+            if (cc.isNullOrUndefined(value)) {
                 value = '';
+            } else {
+                value = value.toString();
             }
             $el.html(value);
         };
@@ -117,6 +119,30 @@ cc.DomBiBinder = cc.Class.new(function (self) {
             setCollection();
         });
         setCollection();
+    });
+
+    registerProcessor('events', '*', function (ctx, $el, attrValue) {
+        attrValue.split(';').each(function (evtRgt) {
+            var toks = evtRgt.split('/');
+            if (toks.length < 2 || toks.length > 3) {
+                throw 'Invalid cc-events value: ' + attrValue;
+            }
+            var callbackName = toks.pop().trim();
+            var evt = toks[0];
+            var callback = function (e) {
+                var f = ctx.get(callbackName);
+                if (cc.instanceOf(f, Function)) {
+                    return f.call(this, $(this), e);
+                } else {
+                    throw callbackName + ' is not a function';
+                }
+            };
+            if (toks.length === 1) {
+                $el.on(evt, callback);
+            } else if (toks.length === 2) {
+                $el.on(evt, toks[1], callback);
+            }
+        });
     });
 
     return {

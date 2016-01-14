@@ -5,6 +5,14 @@ QUnit.test('typeOf', function (assert) {
     assert.ok(cc.typeOf(new Function()) === 'function', 'typeOf new Function');
 });
 
+QUnit.test('instanceOf', function (assert) {
+    assert.ok(cc.instanceOf(0, Number), '0 is instance of Number');
+    assert.ok(cc.instanceOf(132, Number), '132 is instance of Number');
+    assert.ok(cc.instanceOf("abc", String), '"abc" is instance of String');
+    assert.ok(cc.instanceOf(['a'], Array), '["a"] is instance of Array');
+    assert.ok(cc.instanceOf(function () {}, Function), 'function () {} is instance of Function');
+});
+
 QUnit.test('bind', function (assert) {
     var X = 42;
     var obj = {

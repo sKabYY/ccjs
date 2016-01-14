@@ -99,8 +99,26 @@
             <ul cc-datasource="languages" cc-template="#list-test .template"></ul>
         </div>
     </div>
+    <div id="events-test" class="block">
+        <div>
+            <button cc-events="click/onBtnClick">ALERT!</button>
+            <button cc-events="click/toggle">TOGGLE</button>
+            <span cc-bind="onBtnClickFunctionName" class="with-text"></span>
+        </div>
+        <div cc-events="click/onDivClick;click/onDivClick2;click/button/delegateClick">
+            <button>FIRST</button>
+            <button>SECOND</button>
+            <button>THIRD</button>
+        </div>
+    </div>
 </div>
 <script>
+    var onBtnClick1 = function () {
+        alert('1');
+    }.extend('fn', 'onBtnClick1');
+    var onBtnClick2 = function () {
+        alert('2');
+    }.extend('fn', 'onBtnClick2');
     var vm = cc.domBiBinder.bibind({
         firstName: 'skabyy',
         showName: function (scope) {
@@ -122,7 +140,27 @@
             'Scheme',
             'JavaScript',
             'Ruby'
-        ]
+        ],
+        onBtnClick: onBtnClick1,
+        onBtnClickFunctionName: function (scope) {
+            return scope('onBtnClick').fn;
+        },
+        toggle: function () {
+            if (vm.get('onBtnClick') === onBtnClick1) {
+                vm.set('onBtnClick', onBtnClick2);
+            } else {
+                vm.set('onBtnClick', onBtnClick1);
+            }
+        },
+        onDivClick: function () {
+            alert('div!');
+        },
+        onDivClick2: function () {
+            alert('div2!');
+        },
+        delegateClick: function ($el) {
+            alert($el.html());
+        }
     }, '#mvvm');
 
     var languages = vm.get('languages');
