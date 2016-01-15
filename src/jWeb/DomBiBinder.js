@@ -61,7 +61,7 @@ cc.DomBiBinder = cc.Class.new(function (self) {
             } else if (typeName === undefined) {
                 // do nothing
             } else if (cc.isFunction(type)) {
-                value = type(value);
+                value = new type(value);
             } else {
                 throw 'Unknown type: ' + type;
             }
@@ -73,12 +73,6 @@ cc.DomBiBinder = cc.Class.new(function (self) {
                 value = value(scope);
             }
             $el.html(valueToString(value));
-            if (cc.isNullOrUndefined(value)) {
-                value = '';
-            } else {
-                value = value.toString();
-            }
-            $el.html(value);
         };
         var registerChangeEvent = function (key) {
             ctx.on('change:' + key, function () {

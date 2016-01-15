@@ -45,7 +45,7 @@
 <div id="mvvm">
     <div id="date-demo" class="block with-text" style="text-align: center;">
         <span>Now:</span>
-        <span cc-bind="now:Date"></span>
+        <span cc-bind="now:Date" style="font-family: consolas, monaco, monospace;"></span>
     </div>
     <div id="input-demo" class="block">
         <div>
@@ -88,19 +88,22 @@
     </div>
     <div id="list-demo" class="block">
         <script class="template" type="text/template">
-            <li><span cc-bind="showPrefix"></span><span cc-bind="value"></span></li>
+            <li>
+                <span cc-bind="showPrefix"></span><span cc-bind="value"></span>
+                <span cc-bind="date:Date"></span>
+            </li>
         </script>
         <div class="with-text">
             <!-- with undefined datasource -->
-            <ul cc-datasource="undefined" cc-template="#list-test .template"></ul>
+            <ul cc-datasource="undefined" cc-template="#list-demo .template"></ul>
             <!-- with undefined template -->
             <ul cc-datasource="languages" cc-template="undefined"></ul>
         </div>
         <div class="left panel with-text">
-            <ul cc-datasource="languages" cc-template="#list-test .template"></ul>
+            <ul cc-datasource="languages" cc-template="#list-demo .template"></ul>
         </div>
         <div class="right panel with-text">
-            <ul cc-datasource="languages" cc-template="#list-test .template"></ul>
+            <ul cc-datasource="languages" cc-template="#list-demo .template"></ul>
         </div>
     </div>
     <div id="events-demo" class="block">
@@ -139,7 +142,8 @@
                     } else {
                         return '';
                     }
-                }
+                },
+                date: '1988-10-10'
             },
             'Scheme',
             'JavaScript',
