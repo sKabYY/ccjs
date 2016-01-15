@@ -123,7 +123,7 @@ QUnit.test('string.format', function (assert) {
 });
 
 QUnit.test('date.toString', function (assert) {
-    var d_str = '2011-12-13 14:15';
+    var d_str = '2011-12-13 14:15:16';
     var d = new Date(d_str);
     assert.equal(d.toString(), d_str, 'd.toString() === d_str');
     assert.equal(d.toString('yyyy'), '2011', 'd.toString("yyyy" === "2011")');

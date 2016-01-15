@@ -9,6 +9,8 @@ var cc = {};
 
 (function (cc) {
 
+    cc.global = (function () { return this; })();
+
     var each = cc.each = function (obj, proc) {
         for (var k in obj) {
             if (proc.call(null, k, obj[k]) === false) {
@@ -246,7 +248,7 @@ var cc = {};
     Date.implement({
         toString: function (format) {
             if (!format) {
-                format = 'yyyy-MM-dd HH:mm';
+                format = 'yyyy-MM-dd HH:mm:ss';
             }
             return dateFormat.call(this, format);
         }

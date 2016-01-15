@@ -20,3 +20,12 @@ cc.eval = function (src, ctx) {
     args.push('return eval("' + src.replace(/"/g, '\\"') + '")');
     return Function.apply(null, args).apply(null, values);
 };
+
+cc.interval = function (proc, ms) {
+    (function loop() {
+        setTimeout(function () {
+            proc();
+            loop();
+        }, ms);
+    })();
+};

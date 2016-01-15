@@ -43,6 +43,10 @@
 <body>
 <!-- input select textarea -->
 <div id="mvvm">
+    <div id="date-demo" class="block with-text" style="text-align: center;">
+        <span>Now:</span>
+        <span cc-bind="now:Date"></span>
+    </div>
     <div id="input-demo" class="block">
         <div>
             <div class="left panel with-text">
@@ -82,7 +86,7 @@
         <select cc-model="" cc-datasource="languages" multiple></select>
         <div cc-bind=""></div>
     </div>
-    <div id="list-test" class="block">
+    <div id="list-demo" class="block">
         <script class="template" type="text/template">
             <li><span cc-bind="showPrefix"></span><span cc-bind="value"></span></li>
         </script>
@@ -99,7 +103,7 @@
             <ul cc-datasource="languages" cc-template="#list-test .template"></ul>
         </div>
     </div>
-    <div id="events-test" class="block">
+    <div id="events-demo" class="block">
         <div>
             <button cc-events="click/onBtnClick">ALERT!</button>
             <button cc-events="click/toggle">TOGGLE</button>
@@ -160,7 +164,8 @@
         },
         delegateClick: function ($el) {
             alert($el.html());
-        }
+        },
+        now: new Date()
     }, '#mvvm');
 
     var languages = vm.get('languages');
@@ -176,6 +181,11 @@
             });
             languages.at(0).set({ prefix: 'evil' });
         }, 2000);
+    })();
+    (function () {
+        cc.interval(function () {
+            vm.set('now', new Date());
+        }, 1000);
     })();
 </script>
 </body>

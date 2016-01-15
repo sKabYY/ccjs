@@ -51,11 +51,28 @@ cc.DomBiBinder = cc.Class.new(function (self) {
     });
 
     registerProcessor('bind', '*', function (ctx, $el, attrValue) {
+        var toks = attrValue.split(':');
+        var name = toks[0];
+        var typeName = toks[1];
+        var type = cc.global[typeName];
+        var valueToString = function (value) {
+            if (cc.isNullOrUndefined(value)) {
+                return '';
+            } else if (typeName === undefined) {
+                // do nothing
+            } else if (cc.isFunction(type)) {
+                value = type(value);
+            } else {
+                throw 'Unknown type: ' + type;
+            }
+            return value.toString();
+        };
         var setHtml = function (scope) {
-            var value = ctx.get(attrValue);
+            var value = ctx.get(name);
             if (cc.isFunction(value)) {
                 value = value(scope);
             }
+            $el.html(valueToString(value));
             if (cc.isNullOrUndefined(value)) {
                 value = '';
             } else {
@@ -78,7 +95,7 @@ cc.DomBiBinder = cc.Class.new(function (self) {
                 return ctx.get(key);
             };
         })());
-        registerChangeEvent(attrValue);
+        registerChangeEvent(name);
     });
 
     registerProcessor('template', '*', function (ctx, $el, attrValue){
@@ -119,6 +136,10 @@ cc.DomBiBinder = cc.Class.new(function (self) {
             setCollection();
         });
         setCollection();
+    });
+
+    registerProcessor('attrs', '*', function (ctx, $el, attrValue) {
+        // TODO
     });
 
     registerProcessor('events', '*', function (ctx, $el, attrValue) {
