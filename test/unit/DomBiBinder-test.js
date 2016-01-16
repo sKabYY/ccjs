@@ -50,8 +50,8 @@ QUnit.test('cc-bind with function', function (assert) {
     var NAME = 'abc', newNAME = 'ddd';
     var vm = cc.domBiBinder.bibind({
         name: NAME,
-        showName: function (scope) {
-            return 'xxx' + scope('name');
+        showName: function (env) {
+            return 'xxx' + env('name');
         }
     }, $el);
     assert.equal($el.find('span').html(), 'xxx' + NAME, 'span = xxxNAME');
@@ -97,8 +97,8 @@ QUnit.test('cc-datasource cc-template', function (assert) {
             {
                 value: 'C/C++',
                 prefix: 'evil',
-                showPrefix: function (scope) {
-                    var prefix = scope('prefix');
+                showPrefix: function (env) {
+                    var prefix = env('prefix');
                     if (prefix) {
                         return prefix + ' ';
                     } else {

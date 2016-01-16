@@ -134,15 +134,15 @@
     };
     var vm = cc.domBiBinder.bibind({
         firstName: 'skabyy',
-        showName: function (scope) {
-            return 'Full Name:\n' + scope('firstName') + ' ' + scope('secondName');
+        showName: function (env) {
+            return 'Full Name:\n' + env('firstName') + ' ' + env('secondName');
         },
         languages: [
             {
                 value: 'C/C++',
                 prefix: 'evil',
-                showPrefix: function (scope) {
-                    var prefix = scope('prefix');
+                showPrefix: function (env) {
+                    var prefix = env('prefix');
                     if (prefix) {
                         return prefix + ' ';
                     } else {
@@ -156,8 +156,8 @@
             'Ruby'
         ],
         onBtnClick: onBtnClick1,
-        onBtnClickFunctionDesc: function (scope) {
-            return scope('onBtnClick').toString();
+        onBtnClickFunctionDesc: function (env) {
+            return env('onBtnClick').toString();
         },
         toggle: function () {
             if (vm.get('onBtnClick') === onBtnClick1) {
