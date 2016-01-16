@@ -32,29 +32,56 @@ cc.DomBiBinder = cc.Class.new(function (self) {
     };
 
     registerProcessor('model', 'input,textarea', function (ctx, $el, attrValue) {
+        var name = attrValue.trim();
         var setVal = function () {
-            var value = ctx.get(attrValue);
+            var value = ctx.get(name);
             if (value === undefined) {
                 value = '';
             }
             $el.val(value);
         };
         setVal();
-        ctx.on('change:' + attrValue, function (_, _, args) {
+        ctx.on('change:' + name, function (_, _, args) {
             if (!(cc.isObject(args) && cc.instanceOf(args.sender, $) && args.sender.is($el))) {
                 setVal();
             }
         });
         $el.on('input change propertychange', function() {
-            ctx.set(attrValue, $el.val(), { extra: { sender: $el } });
+            ctx.set(name, $el.val(), { extra: { sender: $el } });
         });
     });
 
+    var _bibindName = function (ctx, name, updateView) {
+        var update = function (env) {
+            var value = ctx.get(name);
+            if (cc.isFunction(value)) {
+                value = value(env);
+            }
+            updateView(value);
+        };
+        var registerChangeEvent = function (key) {
+            ctx.on('change:' + key, function () {
+                update(ctx.get);
+            });
+        };
+        update((function () {
+            var dependencies = {};
+            return function (key) {
+                if (!dependencies[key]) {
+                    registerChangeEvent(key);
+                    dependencies[key] = true;
+                }
+                return ctx.get(key);
+            };
+        })());
+        registerChangeEvent(name);
+    };
+
     registerProcessor('bind', '*', function (ctx, $el, attrValue) {
         var toks = attrValue.split(':');
-        var name = toks[0];
+        var name = toks[0].trim();
         var typeName = toks[1];
-        var type = cc.global[typeName];
+        var type = typeName ? cc.global[typeName.trim()]: undefined;
         var valueToString = function (value) {
             if (cc.isNullOrUndefined(value)) {
                 return '';
@@ -67,29 +94,19 @@ cc.DomBiBinder = cc.Class.new(function (self) {
             }
             return value.toString();
         };
-        var setHtml = function (scope) {
-            var value = ctx.get(name);
-            if (cc.isFunction(value)) {
-                value = value(scope);
-            }
+        _bibindName(ctx, name, function (value) {
             $el.html(valueToString(value));
-        };
-        var registerChangeEvent = function (key) {
-            ctx.on('change:' + key, function () {
-                setHtml(ctx.get);
+        });
+    });
+
+    registerProcessor('attrs', '*', function (ctx, $el, attrValue) {
+        attrValue.split(';').filter(Function.id).each(function (stm) {
+            var toks = stm.split(':');
+            var attrName = toks[0].trim(), name = toks[1].trim();
+            _bibindName(ctx, name, function (value) {
+                $el.attr(attrName, value);
             });
-        };
-        setHtml((function () {
-            var dependencies = {};
-            return function (key) {
-                if (!dependencies[key]) {
-                    registerChangeEvent(key);
-                    dependencies[key] = true;
-                }
-                return ctx.get(key);
-            };
-        })());
-        registerChangeEvent(name);
+        });
     });
 
     registerProcessor('template', '*', function (ctx, $el, attrValue){
@@ -130,10 +147,6 @@ cc.DomBiBinder = cc.Class.new(function (self) {
             setCollection();
         });
         setCollection();
-    });
-
-    registerProcessor('attrs', '*', function (ctx, $el, attrValue) {
-        // TODO
     });
 
     registerProcessor('events', '*', function (ctx, $el, attrValue) {

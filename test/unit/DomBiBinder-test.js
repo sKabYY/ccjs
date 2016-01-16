@@ -42,8 +42,8 @@ QUnit.test('registerProcessor', function (assert) {
 QUnit.test('cc-bind with function', function (assert) {
     var html = '' +
         '<div>' +
-        '   <input cc-model="name" />' +
-        '   <span cc-bind="showName"></span>' +
+        '   <input cc-model="name " />' +
+        '   <span cc-bind="showName "></span>' +
         '</div>';
     var $el = $(html);
     $('#qunit-fixture').append($el);
@@ -137,6 +137,25 @@ QUnit.test('cc-datasource cc-template', function (assert) {
     vm.get('languages').at(0).set('value', 'XXX');
     assert.equal($el.find('ul li span[cc-bind="value"]').html(), 'XXX',
         'the content of first li is "XXX"');
+});
+
+QUnit.test('cc-attrs', function (assert) {
+    var html = '' +
+        '<div cc-attrs="a1: x; a2: f;">' +
+        '</div>';
+    var $el = $(html);
+    $('#qunit-fixture').append($el);
+    var vm = cc.domBiBinder.bibind({
+        x: 'abc',
+        f: function (env) {
+            return 'f:' + env('x');
+        }
+    }, $el);
+    assert.equal($el.attr('a1'), 'abc', '[a1="abc"]');
+    assert.equal($el.attr('a2'), 'f:abc', '[a2="f:abc"]');
+    vm.set('x', 'xxx');
+    assert.equal($el.attr('a1'), 'xxx', '[a1="xxx"]');
+    assert.equal($el.attr('a2'), 'f:xxx', '[a2="f:xxx"]');
 });
 
 // TODO: test cc-events

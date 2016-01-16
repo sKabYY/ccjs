@@ -51,6 +51,14 @@ QUnit.test('bind constructor', function (assert) {
     assert.equal(obj2.a, 123, 'obj2.a === 123');
 });
 
+QUnit.test('Date bind', function (assert) {
+    var d_str = '2011-12-13 14:15:16';
+    var f = Date.bind(null, d_str);
+    var d = new f;
+    assert.ok(d instanceof Date, 'd is instance of Date');
+    assert.equal(d.toString(), d_str, 'd.toString() === d_str');
+});
+
 QUnit.test('pluralSetter', function (assert) {
     var obj = {};
     var setter = function (k, v) {

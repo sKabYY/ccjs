@@ -130,19 +130,6 @@ var cc = {};
             this[k] = v;
         }.overloadSetter(),
 
-        // TODO
-        //bind: function (obj) {
-        //    var func = this;
-        //    var args = Array.from(arguments).slice(1);
-        //    var bound = function () {
-        //        return func.apply(obj,
-        //            Array.from(
-        //                args.concat(
-        //                Array.from(arguments))));
-        //    };
-        //    return bound;
-        //},
-
         new: function () {
             var args = Array.from(arguments);
             args.unshift(null);
@@ -168,7 +155,9 @@ var cc = {};
 
         returnFalse: function () {
             return false;
-        }
+        },
+
+        id: function (x) { return x; }
 
     });
 
@@ -265,7 +254,7 @@ var cc = {};
             if (!format) {
                 format = 'yyyy-MM-dd HH:mm:ss';
             }
-            return dateFormat.call(this, format);
+            return dateFormat.call(new Date(this), format);
         }
     });
 
