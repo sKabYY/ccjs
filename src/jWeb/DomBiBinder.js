@@ -61,7 +61,7 @@ cc.DomBiBinder = cc.Class.new(function (self) {
             } else if (typeName === undefined) {
                 // do nothing
             } else if (cc.isFunction(type)) {
-                value = new type(value);
+                value = type.new(value);
             } else {
                 throw 'Unknown type: ' + type;
             }

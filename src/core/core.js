@@ -146,7 +146,7 @@ var cc = {};
         new: function () {
             var args = Array.from(arguments);
             args.unshift(null);
-            return new this.bind.apply(this, args);
+            return new (this.bind.apply(this, args))();
         }
 
     });
