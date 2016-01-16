@@ -15,10 +15,12 @@ cc.Collection = cc.Class.new(function (self) {
             });
             array.append(ms);
             self.trigger('add', [ms]);
+            return self;
         },
 
         addRange: function (ms) {
             self.add.apply(self, ms);
+            return self;
         },
 
         removeIf: function (predicate) {
@@ -77,6 +79,12 @@ cc.Collection = cc.Class.new(function (self) {
 
         each: function (proc) {
             array.each(proc);
+            return self;
+        },
+
+        sort: function (compareFunction) {
+            array.sort(compareFunction);
+            self.trigger('shuffle', []);
             return self;
         },
 

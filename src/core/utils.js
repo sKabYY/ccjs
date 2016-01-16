@@ -29,3 +29,7 @@ cc.interval = function (proc, ms) {
         }, ms);
     })();
 };
+
+cc.template = function (src) {
+
+};

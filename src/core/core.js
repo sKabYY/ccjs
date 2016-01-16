@@ -209,6 +209,13 @@ var cc = {};
     });
 
 
+    Number.extend({
+        from: function (v) {
+            return parseFloat(v);
+        }
+    });
+
+
     String.implement({
         startsWith: function (prefix) {
             return this.indexOf(prefix) === 0;

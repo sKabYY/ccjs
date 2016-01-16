@@ -113,14 +113,12 @@ cc.DomBiBinder = cc.Class.new(function (self) {
         var template = $(attrValue).html();
         var dsName = $el.attr(typeNameToAttr('datasource'));
         var setCollection = function () {
-            var array = ctx.get(dsName);
-            var ds = array;
+            var ds = ctx.get(dsName);
             var ATTR_MODEL_ID = 'cc-model-id';
-            $el.empty();
             if (ds) {
+                $el.empty();
                 if (!cc.instanceOf(ds, cc.Collection)) {
-                    ds = cc.Collection.new();
-                    ds.add.apply(ds, array);
+                    ds = cc.Collection.new().addRange(ds);
                     ctx.set(dsName, ds, { silence: true });
                 }
                 var onAdded = function (m) {
@@ -129,8 +127,15 @@ cc.DomBiBinder = cc.Class.new(function (self) {
                     $dom.attr(ATTR_MODEL_ID, m.id());
                     $el.append($dom);
                 };
-                ds.each(function (m) {
-                    onAdded(m);
+                var render = function () {
+                    $el.empty();
+                    ds.each(function (m) {
+                        onAdded(m);
+                    });
+                };
+                render();
+                ds.on('shuffle', function () {
+                    render();
                 }).on('add', function (ms) {
                     ms.each(onAdded);
                 }).on('remove', function (ms) {
@@ -160,7 +165,7 @@ cc.DomBiBinder = cc.Class.new(function (self) {
             var callback = function (e) {
                 var f = ctx.get(callbackName);
                 if (cc.instanceOf(f, Function)) {
-                    return f.call(this, $(this), e);
+                    return f.call(this, $(this), e, $el);
                 } else {
                     throw callbackName + ' is not a function';
                 }

@@ -139,6 +139,33 @@ QUnit.test('cc-datasource cc-template', function (assert) {
         'the content of first li is "XXX"');
 });
 
+QUnit.test('cc-template shuffle', function (assert) {
+    var html = '' +
+        '<div>' +
+            '<script id="tpl" type="text/template">' +
+                '<li cc-bind="value"></li>' +
+            '</script>' +
+            '<ul cc-datasource="lst" cc-template="#tpl"></ul>' +
+        '</div>';
+    var $el = $(html);
+    $('#qunit-fixture').append($el);
+    var vm = cc.domBiBinder.bibind({
+        lst: [3, 1, 2]
+    }, $el);
+    var getDomLst = function () {
+        return Array.from($el.find('ul li')).map(function (e) {
+            return Number.from($(e).html());
+        });
+    };
+    assert.deepEqual(getDomLst(), [3, 1, 2], 'before sort');
+    vm.get('lst').sort(function (a, b) {
+        if (a.get('value') < b.get('value')) return -1;
+        if (a.get('value') > b.get('value')) return 1;
+        return 0;
+    });
+    assert.deepEqual(getDomLst(), [1, 2, 3], 'after sort');
+});
+
 QUnit.test('cc-attrs', function (assert) {
     var html = '' +
         '<div cc-attrs="a1: x; a2: f;">' +
