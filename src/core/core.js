@@ -37,7 +37,8 @@ var cc = {};
         'String',
         'Function',
         'Array',
-        'Number'
+        'Number',
+        'Date'
     ], function (typeName) {
         cc['is' + typeName] = function (obj) {
             return jsTypeOf(obj) === typeName.toLowerCase();
@@ -117,21 +118,35 @@ var cc = {};
         this.prototype[k] = v;
     }.overloadSetter();
 
+    Function.prototype.implementWithoutOverride = function (k, v) {
+        if (!(k in this.prototype)) {
+            this.prototype[k] = v;
+        }
+    }.overloadSetter();
+
     Function.implement({
 
         extend: function (k, v) {
             this[k] = v;
         }.overloadSetter(),
 
-        bind: function (obj) {
-            var func = this;
-            var args = Array.from(arguments).slice(1);
-            return function () {
-                return func.apply(obj,
-                    Array.from(
-                        args.concat(
-                        Array.from(arguments))));
-            };
+        // TODO
+        //bind: function (obj) {
+        //    var func = this;
+        //    var args = Array.from(arguments).slice(1);
+        //    var bound = function () {
+        //        return func.apply(obj,
+        //            Array.from(
+        //                args.concat(
+        //                Array.from(arguments))));
+        //    };
+        //    return bound;
+        //},
+
+        new: function () {
+            var args = Array.from(arguments);
+            args.unshift(null);
+            return new this.bind.apply(this, args);
         }
 
     });

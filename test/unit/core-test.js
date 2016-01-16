@@ -40,6 +40,15 @@ QUnit.test('bind', function (assert) {
     assert.equal(al1(1), 2, '2: al1(1) === 2');
 });
 
+QUnit.test('bind constructor', function (assert) {
+    var F = function (a) {
+        this.a = a;
+    };
+    var C = F.bind(null, 123);
+    var obj = new C();
+    assert.equal(obj.a, 123, 'obj.a === 123');
+});
+
 QUnit.test('pluralSetter', function (assert) {
     var obj = {};
     var setter = function (k, v) {

@@ -38,6 +38,12 @@
         .right {
             width: 50%;
         }
+        .code {
+            font-family: consolas, monaco, monospace;
+            font-size: 12px;
+            border: 1px solid #ddd;
+            padding: 6px;
+        }
     </style>
 </head>
 <body>
@@ -110,7 +116,7 @@
         <div>
             <button cc-events="click/onBtnClick">ALERT!</button>
             <button cc-events="click/toggle">TOGGLE</button>
-            <span cc-bind="onBtnClickFunctionName" class="with-text"></span>
+            <pre cc-bind="onBtnClickFunctionDesc" class="code"></pre>
         </div>
         <div cc-events="click/onDivClick;click/onDivClick2;click/button/delegateClick">
             <button>FIRST</button>
@@ -122,10 +128,10 @@
 <script>
     var onBtnClick1 = function () {
         alert('1');
-    }.extend('fn', 'onBtnClick1');
+    };
     var onBtnClick2 = function () {
         alert('2');
-    }.extend('fn', 'onBtnClick2');
+    };
     var vm = cc.domBiBinder.bibind({
         firstName: 'skabyy',
         showName: function (scope) {
@@ -150,8 +156,8 @@
             'Ruby'
         ],
         onBtnClick: onBtnClick1,
-        onBtnClickFunctionName: function (scope) {
-            return scope('onBtnClick').fn;
+        onBtnClickFunctionDesc: function (scope) {
+            return scope('onBtnClick').toString();
         },
         toggle: function () {
             if (vm.get('onBtnClick') === onBtnClick1) {
