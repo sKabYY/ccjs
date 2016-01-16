@@ -67,6 +67,10 @@ cc.Collection = cc.Class.new(function (self) {
             return array[i];
         },
 
+        find: function (predicate) {
+            return array.filter(predicate);
+        },
+
         last: function () {
             return array[array.length - 1];
         },
