@@ -147,9 +147,11 @@ cc.DomBiBinder = cc.Class.new(function (self) {
                     });
                 });
             }
+            return ds;
         };
         ctx.on('change:' + dsName, function () {
-            setCollection();
+            var ds = setCollection();
+            ctx.trigger('change-collection:' + dsName, [ds]);
         });
         setCollection();
     });
