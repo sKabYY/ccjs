@@ -157,6 +157,12 @@ var cc = {};
             return false;
         },
 
+        compare: function (a, b) {
+            if (a < b) return -1;
+            if (a > b) return 1;
+            return 0;
+        },
+
         id: function (x) { return x; }
 
     });
