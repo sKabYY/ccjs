@@ -267,7 +267,7 @@ var cc = {};
             if (!format) {
                 format = 'yyyy-MM-dd HH:mm:ss';
             }
-            return dateFormat.call(new Date(this), format);
+            return dateFormat.call(this, format);
         }
     });
 
