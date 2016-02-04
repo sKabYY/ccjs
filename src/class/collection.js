@@ -1,15 +1,24 @@
 cc.Collection = cc.Class.new(function (self) {
 
     var array = [];
+    var ElemClass;
 
     return {
 
-        initialize: function () { },
+        initialize: function (klass) {
+            if (cc.isNullOrUndefined(klass)) {
+                ElemClass = cc.Model;
+            } else if (cc.extendsOf(klass, cc.Model)) {
+                ElemClass = klass;
+            } else {
+                throw 'Need cc.Model but get ' + klass.toString();
+            }
+        },
 
         add: function () {
             var ms = Array.from(arguments).map(function (m) {
-                if (!cc.instanceOf(m, cc.Model)) {
-                    m = cc.Model.new(m);
+                if (!cc.instanceOf(m, ElemClass)) {
+                    m = ElemClass.new(m);
                 }
                 return m;
             });
@@ -31,7 +40,7 @@ cc.Collection = cc.Class.new(function (self) {
         },
 
         remove: function (id) {
-            if (cc.instanceOf(id, cc.Model)) {
+            if (cc.instanceOf(id, ElemClass)) {
                 id = id.id();
             }
             self.removeIf(function (m) {

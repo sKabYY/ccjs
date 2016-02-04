@@ -81,7 +81,11 @@ cc.DomBiBinder = cc.Class.new(function (self) {
         var toks = attrValue.split(':');
         var name = toks[0].trim();
         var typeName = toks[1];
-        var type = typeName ? cc.global[typeName.trim()]: undefined;
+        var type = typeName
+            ? (function (tn){
+                return cc[tn] || cc.global[tn]
+            })(typeName.trim())
+            : undefined;
         var valueToString = function (value) {
             if (cc.isNullOrUndefined(value)) {
                 return '';

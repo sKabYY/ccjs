@@ -60,6 +60,16 @@ var cc = {};
         }
     };
 
+    var extendsOf = cc.extendsOf = function (cls, superCls) {
+        while (cls) {
+            if (cls === superCls) {
+                return true;
+            }
+            cls = cls.$meta$.superclass;
+        }
+        return false;
+    };
+
     cc.instanceOf = function (inst, cls) {
         if (isNullOrUndefined(inst)) {
             return false;
@@ -68,13 +78,7 @@ var cc = {};
             return inst.constructor === cls || inst instanceof cls;
         }
         var c = inst.$meta$ && inst.$meta$.class;
-        while (c) {
-            if (c === cls) {
-                return true;
-            }
-            c = c.$meta$.superclass;
-        }
-        return false;
+        return extendsOf(c, cls);
     };
 
 
