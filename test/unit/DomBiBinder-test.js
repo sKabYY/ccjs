@@ -185,4 +185,25 @@ QUnit.test('cc-attrs', function (assert) {
     assert.equal($el.attr('a2'), 'f:xxx', '[a2="f:xxx"]');
 });
 
+QUnit.test('cc-style', function (assert) {
+    var html = '' +
+        '<div cc-style="style">' +
+        '</div>';
+    var $el = $(html);
+    $('#qunit-fixture').append('<style>div{ padding: 12px; }</style>');
+    $('#qunit-fixture').append($el);
+    var vm = cc.domBiBinder.bibind({
+        style: { padding : '1px' }
+    }, $el);
+    assert.equal($el.css('padding'), '1px', 'padding=1px');
+    vm.set('style', { padding: '2px' });
+    assert.equal($el.css('padding'), '2px', 'padding=2px');
+    vm.set('style', cc.Model.new({ padding: '3px' }));
+    assert.equal($el.css('padding'), '3px', 'padding=3px');
+    vm.get('style').set('padding', '4px');
+    assert.equal($el.css('padding'), '4px', 'padding=4px');
+    vm.get('style').set('padding', undefined);
+    assert.equal($el.css('padding'), '12px', 'padding=12px');
+});
+
 // TODO: test cc-events

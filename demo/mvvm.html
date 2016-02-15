@@ -124,6 +124,15 @@
             <button>THIRD</button>
         </div>
     </div>
+    <div id="style-demo" class="block">
+        <div>
+            <button cc-events="click/toStyleBlue">style blue</button>
+            <button cc-events="click/toStyleRed">style red</button>
+            <button cc-events="click/clearStyle">clear style</button>
+        </div>
+        <div><p cc-style="demoStyle" class="with-text">This is a test text.</p></div>
+        <div><p cc-style="modelStyle" class="with-text">This is another test text.</p></div>
+    </div>
 </div>
 <script>
     var onBtnClick1 = function () {
@@ -175,7 +184,26 @@
         delegateClick: function ($el) {
             alert($el.html());
         },
-        now: new Date()
+        now: new Date(),
+        demoStyle: {},
+        modelStyle: cc.Model.new({
+            background: '#f7f7f7',
+            'font-weight': 'bold'
+        }),
+        toStyleBlue: function () {
+            var style = { color: 'blue' };
+            vm.set('demoStyle', style);
+            vm.get('modelStyle').set(style);
+        },
+        toStyleRed: function () {
+            var style = { color: 'red' };
+            vm.set('demoStyle', style);
+            vm.get('modelStyle').set(style);
+        },
+        clearStyle: function () {
+            vm.set('demoStyle', { color: '' });
+            vm.get('modelStyle').set({ color: undefined});
+        }
     }, '#mvvm');
 
     var languages = vm.get('languages');

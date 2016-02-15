@@ -113,6 +113,24 @@ cc.DomBiBinder = cc.Class.new(function (self) {
         });
     });
 
+    registerProcessor('style', '*', function (ctx, $el, attrValue) {
+        var name = attrValue;
+        _bibindName(ctx, name, function (value) {
+            if (cc.instanceOf(value, cc.Model)) {
+                value.on('changes', function (changes) {
+                    var style = {};
+                    cc.each(changes, function (key, value) {
+                        style[key] = value === undefined ? '' : value;
+                    });
+                    $el.css(style);
+                });
+                $el.css(value.toJSON());
+            } else if (cc.isObject(value)) {
+                $el.css(value);
+            }
+        });
+    });
+
     registerProcessor('template', '*', function (ctx, $el, attrValue){
         var template = $(attrValue).html();
         var dsName = $el.attr(typeNameToAttr('datasource'));
