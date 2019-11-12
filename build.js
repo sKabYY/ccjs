@@ -37,7 +37,7 @@ var build_modules = function (fn, ms, buf) {
                 '// file: ' + m + '\n' +
                 '(function (cc) {\n\n' +
                 '' + src + '\n' +
-                '})(cc);\n';
+                '})(cc || cc = {});\n';
             buf.push(new_src);
         })(ms[i]);
     }
